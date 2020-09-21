@@ -1,53 +1,94 @@
-#include "opencv2/imgproc.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/videoio.hpp"
 #include <iostream>
+#include <math.h>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 
 using namespace cv;
+using namespace std;
 
-int main(int argc, char* argv[])
-{
-    int low_H = 10, low_S = 0, low_V = 0;
-    int high_H = 170, high_S = 255, high_V = 255;
-    const String window_detection_name = "Object Detection";
+Mat rgb2hsv_filtering(Mat &frame_src){
+  Mat frame_final;
 
-    VideoCapture cap(argc > 1 ? atoi(argv[1]) : 0);
-    namedWindow(window_detection_name);
+  int low_h = 10, low_s = 0, low_v = 0;
+  int high_h = 170, high_s = 255, high_v = 255;
 
-    Mat frame, frame_HSV, frame_threshold, edges;
+  // Kernel for opening operation - adjust 2nd argument
+  Mat kernel = getStructuringElement(MORPH_RECT, Size(3, 3));
 
-    Mat opening_kernel = getStructuringElement( MORPH_RECT , Size(10, 10));
-    Mat closing_kernel = getStructuringElement( MORPH_RECT , Size(10, 10));
+  // Convert from RGB to HSV colorspace
+  cvtColor(frame_src, frame_final, COLOR_BGR2HSV);
 
-    while (true) {
-        cap >> frame;
-        if(frame.empty())
-        {
-            break;
-        }
-        // Convert from BGR to HSV colorspace
-        cvtColor(frame, frame_HSV, COLOR_BGR2HSV);
-        
-        // Detect the object based on HSV Range Values
-        inRange(frame_HSV, Scalar(low_H, low_S, low_V), Scalar(high_H, high_S, high_V), frame_threshold);
-        frame_threshold=~frame_threshold;
+  // Detect the object based on HSV Range Values
+  inRange(frame_final, Scalar(low_h, low_s, low_v),
+          Scalar(high_h, high_s, high_v), frame_final);
+          
+  frame_final = ~frame_final;
 
-        // Show the frames / Smoothening & Filtering
-        // Median Smothenigng
-        medianBlur(frame_threshold, frame_threshold, 3);
-        
-        // Opening and Closing filtering - closing maybe not helping
-        morphologyEx(frame_threshold, frame_threshold, MORPH_OPEN, opening_kernel);
-        // morphologyEx(frame_threshold, frame_threshold, MORPH_CLOSE, closing_kernel);
-        
-        // Others 
-        // Canny(frame_threshold,edges,50,200);
+  // Median Smoothening
+  medianBlur(frame_final, frame_final, 3);
 
-        imshow(window_detection_name, frame_threshold);
-        
-        
-        if ((char)waitKey(30) == 27)
-            break;
-    }
-    return 0;
+  // Opening
+  morphologyEx(frame_final, frame_final, MORPH_OPEN, kernel);
+
+  return frame_final;
+}
+
+Mat hsv_circle_detection(Mat &frame_src){
+  Mat frame_final;
+  Mat kernel = getStructuringElement(MORPH_RECT, Size(10, 10));
+
+  cvtColor(frame_src, frame_final, COLOR_BGR2GRAY); 
+  
+  GaussianBlur(frame_final, frame_final, Size(5, 5), 1);
+  Canny(frame_final, frame_final, 50, 100);
+  erode(frame_final, frame_final,(10,10));
+  dilate(frame_final, frame_final,(10,10));
+  morphologyEx(frame_final, frame_final, MORPH_CLOSE, kernel);
+
+  vector<Vec3f> circles;
+  HoughCircles(
+      frame_final, circles, HOUGH_GRADIENT, 1,
+      frame_final.rows / 4, 100, 40, 10, 500);
+  
+  for (size_t i = 0; i < circles.size(); i++) {
+    Vec3i c = circles[i];
+    Point center = Point(c[0], c[1]);
+    // circle center
+    circle(frame_final, center, 1, Scalar(0, 100, 100), 3, LINE_AA);
+    // circle outline
+    int radius = c[2];
+    circle(frame_final, center, radius, Scalar(255, 0, 255), 3, LINE_AA);
+  }
+
+  return frame_final;
+}
+
+
+int main(int argc, char *argv[]) {
+
+  const String window_one_name = "HSV Filtering";
+  const String window_two_name = "Circle Detection";
+
+  VideoCapture cap(argc > 1 ? atoi(argv[1]) : 0);
+  namedWindow(window_one_name);
+  namedWindow(window_two_name);
+
+  Mat frame_rgb, frame_hsv, frame_gray;
+
+  Mat opening_kernel = getStructuringElement(MORPH_RECT, Size(20, 20));
+
+  while (true) {
+    cap.read(frame_rgb);
+
+    frame_hsv = rgb2hsv_filtering(frame_rgb);
+
+    frame_gray = hsv_circle_detection(frame_rgb);
+    
+    imshow(window_one_name, frame_hsv);
+    imshow(window_two_name, frame_gray);
+
+    if ((char)waitKey(30) == 27)
+      break;
+  }
+  return 0;
 }

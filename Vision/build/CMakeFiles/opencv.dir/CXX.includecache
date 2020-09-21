@@ -7,13 +7,13 @@
 #IncludeRegexTransform: 
 
 /home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/main.cpp
-opencv2/imgproc.hpp
-/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/opencv2/imgproc.hpp
-opencv2/highgui.hpp
-/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/opencv2/highgui.hpp
-opencv2/videoio.hpp
-/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/opencv2/videoio.hpp
 iostream
+-
+math.h
+-
+opencv2/highgui.hpp
+-
+opencv2/imgproc.hpp
 -
 
 /usr/include/opencv4/opencv2/calib3d.hpp
