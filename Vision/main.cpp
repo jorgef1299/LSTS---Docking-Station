@@ -22,13 +22,14 @@ Mat rgb2hsv_filtering(Mat &frame_src){
   inRange(frame_final, Scalar(low_h, low_s, low_v),
           Scalar(high_h, high_s, high_v), frame_final);
           
-  frame_final = ~frame_final;
+  frame_final = frame_final;
 
   // Median Smoothening
-  medianBlur(frame_final, frame_final, 3);
+  //medianBlur(frame_final, frame_final, 3);
 
   // Opening
   morphologyEx(frame_final, frame_final, MORPH_OPEN, kernel);
+  morphologyEx(frame_final, frame_final, MORPH_GRADIENT, kernel);
 
   return frame_final;
 }
