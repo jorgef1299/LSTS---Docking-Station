@@ -40,10 +40,10 @@ Mat hsv_circle_detection(Mat &frame_src){
 
   cvtColor(frame_src, frame_final, COLOR_BGR2GRAY); 
   
-  GaussianBlur(frame_final, frame_final, Size(5, 5), 1);
+  // GaussianBlur(frame_final, frame_final, Size(5, 5), 1);
   Canny(frame_final, frame_final, 50, 100);
-  erode(frame_final, frame_final,(10,10));
-  dilate(frame_final, frame_final,(10,10));
+  // erode(frame_final, frame_final,(10,10));
+  // dilate(frame_final, frame_final,(10,10));
   morphologyEx(frame_final, frame_final, MORPH_CLOSE, kernel);
 
   vector<Vec3f> circles;
@@ -81,11 +81,11 @@ int main(int argc, char *argv[]) {
   while (true) {
     cap.read(frame_rgb);
 
-    frame_hsv = rgb2hsv_filtering(frame_rgb);
+    // frame_hsv = rgb2hsv_filtering(frame_rgb);
 
     frame_gray = hsv_circle_detection(frame_rgb);
     
-    imshow(window_one_name, frame_hsv);
+    // imshow(window_one_name, frame_hsv);
     imshow(window_two_name, frame_gray);
 
     if ((char)waitKey(30) == 27)
