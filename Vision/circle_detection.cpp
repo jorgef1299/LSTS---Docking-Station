@@ -34,7 +34,7 @@ Mat rgb2hsv_filtering(Mat &frame_src){
   return frame_final;
 }
 
-Mat hsv_circle_detection(Mat &frame_src){
+Mat rgb_circle_detection(Mat &frame_src){
   Mat frame_final;
   Mat kernel = getStructuringElement(MORPH_RECT, Size(10, 10));
 
@@ -49,7 +49,7 @@ Mat hsv_circle_detection(Mat &frame_src){
   vector<Vec3f> circles;
   HoughCircles(
       frame_final, circles, HOUGH_GRADIENT, 1,
-      frame_final.rows / 4, 100, 40, 10, 500);
+      frame_final.rows / 4, 100, 45, 10, 500);
   
   for (size_t i = 0; i < circles.size(); i++) {
     Vec3i c = circles[i];
@@ -63,7 +63,6 @@ Mat hsv_circle_detection(Mat &frame_src){
 
   return frame_final;
 }
-
 
 int main(int argc, char *argv[]) {
 
@@ -83,8 +82,8 @@ int main(int argc, char *argv[]) {
 
     // frame_hsv = rgb2hsv_filtering(frame_rgb);
 
-    frame_gray = hsv_circle_detection(frame_rgb);
-    
+    frame_gray = rgb_circle_detection(frame_rgb);
+
     // imshow(window_one_name, frame_hsv);
     imshow(window_two_name, frame_gray);
 

@@ -111,44 +111,84 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named opencv
+# Target rules for targets named template_matching
 
 # Build rule for target.
-opencv: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 opencv
-.PHONY : opencv
+template_matching: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 template_matching
+.PHONY : template_matching
 
 # fast build rule for target.
-opencv/fast:
-	$(MAKE) -f CMakeFiles/opencv.dir/build.make CMakeFiles/opencv.dir/build
-.PHONY : opencv/fast
+template_matching/fast:
+	$(MAKE) -f CMakeFiles/template_matching.dir/build.make CMakeFiles/template_matching.dir/build
+.PHONY : template_matching/fast
 
-main.o: main.cpp.o
+#=============================================================================
+# Target rules for targets named circle_detection
 
-.PHONY : main.o
+# Build rule for target.
+circle_detection: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 circle_detection
+.PHONY : circle_detection
+
+# fast build rule for target.
+circle_detection/fast:
+	$(MAKE) -f CMakeFiles/circle_detection.dir/build.make CMakeFiles/circle_detection.dir/build
+.PHONY : circle_detection/fast
+
+circle_detection.o: circle_detection.cpp.o
+
+.PHONY : circle_detection.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/opencv.dir/build.make CMakeFiles/opencv.dir/main.cpp.o
-.PHONY : main.cpp.o
+circle_detection.cpp.o:
+	$(MAKE) -f CMakeFiles/circle_detection.dir/build.make CMakeFiles/circle_detection.dir/circle_detection.cpp.o
+.PHONY : circle_detection.cpp.o
 
-main.i: main.cpp.i
+circle_detection.i: circle_detection.cpp.i
 
-.PHONY : main.i
+.PHONY : circle_detection.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/opencv.dir/build.make CMakeFiles/opencv.dir/main.cpp.i
-.PHONY : main.cpp.i
+circle_detection.cpp.i:
+	$(MAKE) -f CMakeFiles/circle_detection.dir/build.make CMakeFiles/circle_detection.dir/circle_detection.cpp.i
+.PHONY : circle_detection.cpp.i
 
-main.s: main.cpp.s
+circle_detection.s: circle_detection.cpp.s
 
-.PHONY : main.s
+.PHONY : circle_detection.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/opencv.dir/build.make CMakeFiles/opencv.dir/main.cpp.s
-.PHONY : main.cpp.s
+circle_detection.cpp.s:
+	$(MAKE) -f CMakeFiles/circle_detection.dir/build.make CMakeFiles/circle_detection.dir/circle_detection.cpp.s
+.PHONY : circle_detection.cpp.s
+
+template_matching.o: template_matching.cpp.o
+
+.PHONY : template_matching.o
+
+# target to build an object file
+template_matching.cpp.o:
+	$(MAKE) -f CMakeFiles/template_matching.dir/build.make CMakeFiles/template_matching.dir/template_matching.cpp.o
+.PHONY : template_matching.cpp.o
+
+template_matching.i: template_matching.cpp.i
+
+.PHONY : template_matching.i
+
+# target to preprocess a source file
+template_matching.cpp.i:
+	$(MAKE) -f CMakeFiles/template_matching.dir/build.make CMakeFiles/template_matching.dir/template_matching.cpp.i
+.PHONY : template_matching.cpp.i
+
+template_matching.s: template_matching.cpp.s
+
+.PHONY : template_matching.s
+
+# target to generate assembly for a file
+template_matching.cpp.s:
+	$(MAKE) -f CMakeFiles/template_matching.dir/build.make CMakeFiles/template_matching.dir/template_matching.cpp.s
+.PHONY : template_matching.cpp.s
 
 # Help Target
 help:
@@ -158,10 +198,14 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... opencv"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... template_matching"
+	@echo "... circle_detection"
+	@echo "... circle_detection.o"
+	@echo "... circle_detection.i"
+	@echo "... circle_detection.s"
+	@echo "... template_matching.o"
+	@echo "... template_matching.i"
+	@echo "... template_matching.s"
 .PHONY : help
 
 
