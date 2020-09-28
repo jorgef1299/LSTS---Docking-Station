@@ -54,7 +54,6 @@ namespace Sensors
       std::vector<int16_t> offset_bias;
       //! Scale correction factors.
       std::vector<float> scale_correction;
-      
     };
 
     struct Task: public DUNE::Tasks::Task
@@ -76,8 +75,6 @@ namespace Sensors
       IMC::MagneticField m_magn;
       //! Task arguments.
       Arguments m_args;
-      //! Device protocol handler.
-      Hardware::LUCL::Protocol m_proto;
       
       Task(const std::string& name, Tasks::Context& ctx):
         DUNE::Tasks::Task(name, ctx)
