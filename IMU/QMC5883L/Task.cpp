@@ -30,7 +30,7 @@
 // DUNE headers.
 #include <DUNE/DUNE.hpp>
 
-//! Flags for status register #1.
+// Flags for status register #1.
 #define STAT_DRDY 0b00000001  // Data Ready.
 #define STAT_OVL 0b00000010   // Overflow flag.
 #define STAT_DOR 0b00000100   // Data skipped for reading.
