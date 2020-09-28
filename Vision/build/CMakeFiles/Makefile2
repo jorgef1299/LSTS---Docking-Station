@@ -53,12 +53,14 @@ CMAKE_BINARY_DIR = /home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Dockin
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/blob.dir/all
 all: CMakeFiles/template_matching.dir/all
 all: CMakeFiles/circle_detection.dir/all
 
 .PHONY : all
 
 # The main recursive "clean" target.
+clean: CMakeFiles/blob.dir/clean
 clean: CMakeFiles/template_matching.dir/clean
 clean: CMakeFiles/circle_detection.dir/clean
 
@@ -70,13 +72,40 @@ preinstall:
 .PHONY : preinstall
 
 #=============================================================================
+# Target rules for target CMakeFiles/blob.dir
+
+# All Build rule for target.
+CMakeFiles/blob.dir/all:
+	$(MAKE) -f CMakeFiles/blob.dir/build.make CMakeFiles/blob.dir/depend
+	$(MAKE) -f CMakeFiles/blob.dir/build.make CMakeFiles/blob.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/CMakeFiles --progress-num=1,2 "Built target blob"
+.PHONY : CMakeFiles/blob.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/blob.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/blob.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/CMakeFiles 0
+.PHONY : CMakeFiles/blob.dir/rule
+
+# Convenience name for target.
+blob: CMakeFiles/blob.dir/rule
+
+.PHONY : blob
+
+# clean rule for target.
+CMakeFiles/blob.dir/clean:
+	$(MAKE) -f CMakeFiles/blob.dir/build.make CMakeFiles/blob.dir/clean
+.PHONY : CMakeFiles/blob.dir/clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/template_matching.dir
 
 # All Build rule for target.
 CMakeFiles/template_matching.dir/all:
 	$(MAKE) -f CMakeFiles/template_matching.dir/build.make CMakeFiles/template_matching.dir/depend
 	$(MAKE) -f CMakeFiles/template_matching.dir/build.make CMakeFiles/template_matching.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/CMakeFiles --progress-num=3,4 "Built target template_matching"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/CMakeFiles --progress-num=5,6 "Built target template_matching"
 .PHONY : CMakeFiles/template_matching.dir/all
 
 # Build rule for subdir invocation for target.
@@ -103,7 +132,7 @@ CMakeFiles/template_matching.dir/clean:
 CMakeFiles/circle_detection.dir/all:
 	$(MAKE) -f CMakeFiles/circle_detection.dir/build.make CMakeFiles/circle_detection.dir/depend
 	$(MAKE) -f CMakeFiles/circle_detection.dir/build.make CMakeFiles/circle_detection.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/CMakeFiles --progress-num=1,2 "Built target circle_detection"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/CMakeFiles --progress-num=3,4 "Built target circle_detection"
 .PHONY : CMakeFiles/circle_detection.dir/all
 
 # Build rule for subdir invocation for target.

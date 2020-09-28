@@ -51,6 +51,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
+  "CMakeFiles/blob.dir/DependInfo.cmake"
   "CMakeFiles/template_matching.dir/DependInfo.cmake"
   "CMakeFiles/circle_detection.dir/DependInfo.cmake"
   )

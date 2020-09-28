@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Dockin
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/local/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -77,6 +66,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/local/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named blob
+
+# Build rule for target.
+blob: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 blob
+.PHONY : blob
+
+# fast build rule for target.
+blob/fast:
+	$(MAKE) -f CMakeFiles/blob.dir/build.make CMakeFiles/blob.dir/build
+.PHONY : blob/fast
+
+#=============================================================================
 # Target rules for targets named template_matching
 
 # Build rule for target.
@@ -135,6 +148,33 @@ circle_detection: cmake_check_build_system
 circle_detection/fast:
 	$(MAKE) -f CMakeFiles/circle_detection.dir/build.make CMakeFiles/circle_detection.dir/build
 .PHONY : circle_detection/fast
+
+blob.o: blob.cpp.o
+
+.PHONY : blob.o
+
+# target to build an object file
+blob.cpp.o:
+	$(MAKE) -f CMakeFiles/blob.dir/build.make CMakeFiles/blob.dir/blob.cpp.o
+.PHONY : blob.cpp.o
+
+blob.i: blob.cpp.i
+
+.PHONY : blob.i
+
+# target to preprocess a source file
+blob.cpp.i:
+	$(MAKE) -f CMakeFiles/blob.dir/build.make CMakeFiles/blob.dir/blob.cpp.i
+.PHONY : blob.cpp.i
+
+blob.s: blob.cpp.s
+
+.PHONY : blob.s
+
+# target to generate assembly for a file
+blob.cpp.s:
+	$(MAKE) -f CMakeFiles/blob.dir/build.make CMakeFiles/blob.dir/blob.cpp.s
+.PHONY : blob.cpp.s
 
 circle_detection.o: circle_detection.cpp.o
 
@@ -196,10 +236,14 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... rebuild_cache"
+	@echo "... blob"
 	@echo "... template_matching"
 	@echo "... circle_detection"
+	@echo "... blob.o"
+	@echo "... blob.i"
+	@echo "... blob.s"
 	@echo "... circle_detection.o"
 	@echo "... circle_detection.i"
 	@echo "... circle_detection.s"

@@ -51,6 +51,7 @@ int main( int argc, char** argv )
 
   return EXIT_SUCCESS;
 }
+
 void MatchingMethod( int, void* )
 {
   Mat img_display;
