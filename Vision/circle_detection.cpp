@@ -36,16 +36,18 @@ Mat rgb2hsv_filtering(Mat &frame_src){
 
 Mat rgb_circle_detection(Mat &frame_src){
   Mat frame_final;
-  Mat kernel = getStructuringElement(MORPH_RECT, Size(15, 15));
+  Mat kernel = getStructuringElement(MORPH_RECT, Size(10, 10));
 
   cvtColor(frame_src, frame_final, COLOR_BGR2GRAY); 
   
-  GaussianBlur(frame_final, frame_final, Size(7, 7), 1);
+  GaussianBlur(frame_final, frame_final, Size(21, 21), 1);
   Canny(frame_final, frame_final, 50, 100);
   morphologyEx(frame_final, frame_final, MORPH_CLOSE, kernel);
 
   vector<Vec3f> circles;
-  HoughCircles(frame_final, circles, HOUGH_GRADIENT, 1,frame_final.rows / 2, 100, 45, 1, 500);
+  HoughCircles(
+      frame_final, circles, HOUGH_GRADIENT, 1,
+      frame_final.rows / 2, 100, 45, 1, 500);
   
   for (size_t i = 0; i < circles.size(); i++) {
     Vec3i c = circles[i];
