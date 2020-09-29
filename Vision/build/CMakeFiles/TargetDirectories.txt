@@ -1,5 +1,0 @@
-/home/francisco/LSTS/Research Project/LSTS---Docking-Station/Vision/build/CMakeFiles/edit_cache.dir
-/home/francisco/LSTS/Research Project/LSTS---Docking-Station/Vision/build/CMakeFiles/rebuild_cache.dir
-/home/francisco/LSTS/Research Project/LSTS---Docking-Station/Vision/build/CMakeFiles/blob.dir
-/home/francisco/LSTS/Research Project/LSTS---Docking-Station/Vision/build/CMakeFiles/template_matching.dir
-/home/francisco/LSTS/Research Project/LSTS---Docking-Station/Vision/build/CMakeFiles/circle_detection.dir
