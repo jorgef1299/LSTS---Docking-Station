@@ -1,4 +1,4 @@
-# Install script for directory: /home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision
+# Install script for directory: /home/francisco/LSTS/Research Project/LSTS---Docking-Station/Vision
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/francisco/LSTS/Research Project/LSTS---Docking-Station/Vision/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

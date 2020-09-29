@@ -6,13 +6,13 @@
 
 #IncludeRegexTransform: 
 
-/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/template_matching.cpp
+/home/francisco/LSTS/Research Project/LSTS---Docking-Station/Vision/template_matching.cpp
 opencv2/imgcodecs.hpp
-/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/opencv2/imgcodecs.hpp
+/home/francisco/LSTS/Research Project/LSTS---Docking-Station/Vision/opencv2/imgcodecs.hpp
 opencv2/highgui.hpp
-/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/opencv2/highgui.hpp
+/home/francisco/LSTS/Research Project/LSTS---Docking-Station/Vision/opencv2/highgui.hpp
 opencv2/imgproc.hpp
-/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/opencv2/imgproc.hpp
+/home/francisco/LSTS/Research Project/LSTS---Docking-Station/Vision/opencv2/imgproc.hpp
 iostream
 -
 

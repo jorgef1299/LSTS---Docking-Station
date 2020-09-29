@@ -36,18 +36,16 @@ Mat rgb2hsv_filtering(Mat &frame_src){
 
 Mat rgb_circle_detection(Mat &frame_src){
   Mat frame_final;
-  Mat kernel = getStructuringElement(MORPH_RECT, Size(25, 25));
+  Mat kernel = getStructuringElement(MORPH_RECT, Size(15, 15));
 
   cvtColor(frame_src, frame_final, COLOR_BGR2GRAY); 
   
-  GaussianBlur(frame_final, frame_final, Size(5, 5), 1);
+  GaussianBlur(frame_final, frame_final, Size(7, 7), 1);
   Canny(frame_final, frame_final, 50, 100);
   morphologyEx(frame_final, frame_final, MORPH_CLOSE, kernel);
 
   vector<Vec3f> circles;
-  HoughCircles(
-      frame_final, circles, HOUGH_GRADIENT, 1,
-      frame_final.rows / 2, 100, 45, 1, 500);
+  HoughCircles(frame_final, circles, HOUGH_GRADIENT, 1,frame_final.rows / 2, 100, 45, 1, 500);
   
   for (size_t i = 0; i < circles.size(); i++) {
     Vec3i c = circles[i];
@@ -67,22 +65,31 @@ int main(int argc, char *argv[]) {
   const String window_one_name = "HSV Filtering";
   const String window_two_name = "Circle Detection";
 
+  int x, y, w, h;
+
   VideoCapture cap(argc > 1 ? atoi(argv[1]) : 0);
-  namedWindow(window_one_name);
+  //namedWindow(window_one_name);
   namedWindow(window_two_name);
 
-  Mat frame_rgb, frame_hsv, frame_gray;
-
+  Mat frame_rgb, frame_hsv, frame_gray, frame_rgb_crop;
   Mat opening_kernel = getStructuringElement(MORPH_RECT, Size(20, 20));
 
   while (true) {
+
     cap.read(frame_rgb);
+    x = 0;
+    y = frame_rgb.rows/4;
+    w = frame_rgb.cols;
+    h = frame_rgb.rows/2;
 
-    // frame_hsv = rgb2hsv_filtering(frame_rgb);
+    // Crop the original image to the defined ROI
+    Rect region_of_interest = Rect(x, y, w, h);
+    frame_rgb_crop = frame_rgb(region_of_interest);
 
-    frame_gray = rgb_circle_detection(frame_rgb);
+    //frame_hsv = rgb2hsv_filtering(frame_rgb);
+    frame_gray = rgb_circle_detection(frame_rgb_crop);
 
-    // imshow(window_one_name, frame_hsv);
+    //imshow(window_one_name, frame_hsv);
     imshow(window_two_name, frame_gray);
 
     if ((char)waitKey(30) == 27)
