@@ -6,7 +6,27 @@
 using namespace cv;
 using namespace std;
 
-Mat rgb2hsv_filtering(Mat &frame_src){
+Mat monochromatic_circle_detection(Mat &frame_src) {
+  Mat frame_final, threshold;
+  Mat kernel = getStructuringElement(MORPH_RECT, Size(20, 20));
+
+  int low_h = 10, low_s = 0, low_v = 0;
+  int high_h = 170, high_s = 255, high_v = 255;
+
+  // Convert from RGB to HSV colorspace
+  cvtColor(frame_src, frame_final, COLOR_BGR2HSV);
+
+  // Detect the object based on HSV Range Values (returns monochromatic image)
+  inRange(frame_final, Scalar(low_h, low_s, low_v),
+          Scalar(high_h, high_s, high_v), threshold);
+
+  GaussianBlur(threshold, threshold, Size(21, 21), 1);
+  morphologyEx(threshold, threshold, MORPH_CLOSE, kernel);
+
+  return threshold;
+}
+
+Mat rgb2hsv_filtering(Mat &frame_src) {
   Mat frame_final;
 
   int low_h = 10, low_s = 0, low_v = 0;
@@ -21,11 +41,11 @@ Mat rgb2hsv_filtering(Mat &frame_src){
   // Detect the object based on HSV Range Values
   inRange(frame_final, Scalar(low_h, low_s, low_v),
           Scalar(high_h, high_s, high_v), frame_final);
-          
+
   frame_final = frame_final;
 
   // Median Smoothening
-  //medianBlur(frame_final, frame_final, 3);
+  // medianBlur(frame_final, frame_final, 3);
 
   // Opening
   morphologyEx(frame_final, frame_final, MORPH_OPEN, kernel);
@@ -34,21 +54,20 @@ Mat rgb2hsv_filtering(Mat &frame_src){
   return frame_final;
 }
 
-Mat rgb_circle_detection(Mat &frame_src){
+Mat circle_detection(Mat &frame_src) {
   Mat frame_final;
-  Mat kernel = getStructuringElement(MORPH_RECT, Size(10, 10));
+  Mat kernel = getStructuringElement(MORPH_RECT, Size(8, 8));
 
-  cvtColor(frame_src, frame_final, COLOR_BGR2GRAY); 
-  
-  GaussianBlur(frame_final, frame_final, Size(21, 21), 1);
+  cvtColor(frame_src, frame_final, COLOR_BGR2GRAY);
+
+  GaussianBlur(frame_final, frame_final, Size(15, 15), 1);
   Canny(frame_final, frame_final, 50, 100);
   morphologyEx(frame_final, frame_final, MORPH_CLOSE, kernel);
 
   vector<Vec3f> circles;
-  HoughCircles(
-      frame_final, circles, HOUGH_GRADIENT, 1,
-      frame_final.rows / 2, 100, 45, 1, 500);
-  
+  HoughCircles(frame_final, circles, HOUGH_GRADIENT, 1, frame_final.rows / 2,
+               100, 45, 1, 500);
+
   for (size_t i = 0; i < circles.size(); i++) {
     Vec3i c = circles[i];
     Point center = Point(c[0], c[1]);
@@ -65,34 +84,33 @@ Mat rgb_circle_detection(Mat &frame_src){
 int main(int argc, char *argv[]) {
 
   const String window_one_name = "HSV Filtering";
-  const String window_two_name = "Circle Detection";
+  const String window_two_name = "Grayscale Circle Detection";
+  const String window_three_name = "Monochromatic Circle Detection";
 
+  namedWindow(window_two_name);
+
+  Mat frame_rgb, frame_bin, frame_hsv, frame_circle, frame_rgb_crop;
   int x, y, w, h;
 
   VideoCapture cap(argc > 1 ? atoi(argv[1]) : 0);
-  //namedWindow(window_one_name);
-  namedWindow(window_two_name);
-
-  Mat frame_rgb, frame_hsv, frame_gray, frame_rgb_crop;
-  Mat opening_kernel = getStructuringElement(MORPH_RECT, Size(20, 20));
 
   while (true) {
 
     cap.read(frame_rgb);
+
     x = 0;
-    y = frame_rgb.rows/4;
+    y = frame_rgb.rows / 4;
     w = frame_rgb.cols;
-    h = frame_rgb.rows/2;
+    h = frame_rgb.rows / 2;
 
     // Crop the original image to the defined ROI
     Rect region_of_interest = Rect(x, y, w, h);
     frame_rgb_crop = frame_rgb(region_of_interest);
 
-    //frame_hsv = rgb2hsv_filtering(frame_rgb);
-    frame_gray = rgb_circle_detection(frame_rgb_crop);
+    frame_circle = circle_detection(frame_rgb_crop);
+    // frame_circle = monochromatic_circle_detection(frame_rgb);
 
-    //imshow(window_one_name, frame_hsv);
-    imshow(window_two_name, frame_gray);
+    imshow(window_two_name, frame_circle);
 
     if ((char)waitKey(30) == 27)
       break;
