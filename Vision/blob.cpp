@@ -6,6 +6,17 @@
 using namespace std;
 using namespace cv;
 
+void use_only_ROI(Mat &frame_src){
+
+  int x = 0;
+  int y = frame_src.rows / 4;
+  int w = frame_src.cols;
+  int h = frame_src.rows / 2;
+
+  Rect region_of_interest = Rect(x, y, w, h);
+  frame_src = frame_src(region_of_interest);
+}
+
 int main(int argc, char *argv[]) {
 
   VideoCapture cap(argc > 1 ? atoi(argv[1]) : 0);
@@ -40,7 +51,8 @@ int main(int argc, char *argv[]) {
 
   while (true) {
     cap.read(cap_frame);
-
+    use_only_ROI(cap_frame);
+    
     // Convert from RGB to HSV colorspace
     cvtColor(cap_frame, cap_frame, COLOR_BGR2HSV);
 
