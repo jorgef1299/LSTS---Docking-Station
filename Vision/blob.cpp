@@ -1,10 +1,13 @@
 #include <iostream>
+#include <cmath>
 #include <opencv2/features2d.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
 using namespace std;
 using namespace cv;
+
+#define MAX_PICAM_ANGLE 31.1
 
 void use_only_ROI(Mat &frame_src){
 
@@ -19,8 +22,8 @@ void use_only_ROI(Mat &frame_src){
 
 int main(int argc, char *argv[]) {
 
-  int dist = 200;
-  double pi = 2 * acos(0.0), alpha;
+  bool first_loop = true;
+  double alpha;
 
   VideoCapture cap(argc > 1 ? atoi(argv[1]) : 0);
 
@@ -32,12 +35,14 @@ int main(int argc, char *argv[]) {
 
   // Set Area filtering parameters
   params.filterByArea = true;
-  params.minArea = 1000;
-  params.maxArea = 1000000; //determine max rpicam image resolution and insert area=rpi_res_height * rpi_res_width
+  params.minArea = 5000;
+
+  cap.read(cap_frame);
+  params.maxArea = 4*M_PI*pow(cap_frame.rows/4, 2); //Max Blob Area, considerind ROI
 
   // Set Circularity filtering parameters (1=true circle)
   params.filterByCircularity = true;
-  params.minCircularity = 0.7;
+  params.minCircularity = 0.5;
 
   // Set Convexity filtering parameters
   params.filterByConvexity = true;
@@ -59,33 +64,27 @@ int main(int argc, char *argv[]) {
     cvtColor(cap_frame, cap_frame, COLOR_BGR2HSV);
 
     // Detect the object based on HSV Range Values (returns monochromatic image)
-    inRange(cap_frame, Scalar(10, 0, 0),
-            Scalar(170, 255, 255), cap_frame);
+    inRange(cap_frame, Scalar(15, 0, 0),
+            Scalar(165, 255, 255), cap_frame);
 
     GaussianBlur(cap_frame, cap_frame, Size(7, 7), 1);
     morphologyEx(cap_frame, cap_frame, MORPH_CLOSE, kernel); 
 
     detector->detect(cap_frame, keypoints);
 
-    // Draw centroids of the Blobs found
-    drawKeypoints(cap_frame, keypoints, blob_image);
-    imshow("Blobs Centroids", blob_image);
     // Draw detected blobs as red circles.
     // DrawMatchesFlags::DRAW_RICH_KEYPOINTS flag ensures the size of the circle
     // corresponds to the size of blob
     drawKeypoints(cap_frame, keypoints, im_with_keypoints, Scalar(0, 0, 255),
                   DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
 
+   for(auto blobIterator : keypoints){
+      alpha = atan((blobIterator.pt.x - cap_frame.cols/2)/cap_frame.cols * tan(MAX_PICAM_ANGLE * M_PI/180));
 
-    for(vector<cv::KeyPoint>::iterator blobIterator = keypoints.begin(); blobIterator != keypoints.end(); blobIterator++){
-          cout << "Center in the X axis: " << blobIterator->pt.x - 320 << endl;
-          cout << "Current distance until target: " << dist << endl;
-
-          alpha = atan((blobIterator->pt.x - 320)/320 * tan(31.1 * pi/180));
-
-          cout << "The vehicle must turn: " << alpha << endl << endl;
+      cout << "Distance from x center: " << blobIterator.pt.x - cap_frame.cols/2 << '\n'
+           << "The vehicle must turn: " << alpha << '\n' << endl;
     }
-      // Show blobs
+    
     imshow("Blob Detection", im_with_keypoints);
 
     if ((char)waitKey(30) == 27)
