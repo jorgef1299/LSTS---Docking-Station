@@ -19,10 +19,12 @@ void use_only_ROI(Mat &frame_src){
 
 int main(int argc, char *argv[]) {
 
-  VideoCapture cap(argc > 1 ? atoi(argv[1]) : 0);
-  namedWindow("window1");
+  int dist = 200;
+  double pi = 2 * acos(0.0), alpha;
 
-  Mat cap_frame, im_with_keypoints;
+  VideoCapture cap(argc > 1 ? atoi(argv[1]) : 0);
+
+  Mat cap_frame, im_with_keypoints, blob_image;
   Mat kernel = getStructuringElement(MORPH_RECT, Size(10, 10));
  
   // Setup SimpleBlobDetector parameters.
@@ -65,13 +67,25 @@ int main(int argc, char *argv[]) {
 
     detector->detect(cap_frame, keypoints);
 
+    // Draw centroids of the Blobs found
+    drawKeypoints(cap_frame, keypoints, blob_image);
+    imshow("Blobs Centroids", blob_image);
     // Draw detected blobs as red circles.
     // DrawMatchesFlags::DRAW_RICH_KEYPOINTS flag ensures the size of the circle
     // corresponds to the size of blob
     drawKeypoints(cap_frame, keypoints, im_with_keypoints, Scalar(0, 0, 255),
                   DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
 
-    // Show blobs
+
+    for(vector<cv::KeyPoint>::iterator blobIterator = keypoints.begin(); blobIterator != keypoints.end(); blobIterator++){
+          cout << "Center in the X axis: " << blobIterator->pt.x - 320 << endl;
+          cout << "Current distance until target: " << dist << endl;
+
+          alpha = atan((blobIterator->pt.x - 320)/320 * tan(31.1 * pi/180));
+
+          cout << "The vehicle must turn: " << alpha << endl << endl;
+    }
+      // Show blobs
     imshow("Blob Detection", im_with_keypoints);
 
     if ((char)waitKey(30) == 27)
