@@ -37,9 +37,6 @@
 
 namespace Sensors
 {
-  //! Insert short task description here.
-  //!
-  //! Insert explanation on task behaviour here.
   //! @author Jorge Ferreira
   namespace QMC5883L
   {
@@ -127,18 +124,6 @@ namespace Sensors
         data2[0] = 0x09;
         data2[1] = 0b00000001;
         m_i2c->write(data2, 2);
-      }
-
-      //! Initialize resources.
-      void
-      onResourceInitialization(void)
-      {
-      }
-
-      //! Release resources.
-      void
-      onResourceRelease(void)
-      {
       }
       
       //! Read one byte
