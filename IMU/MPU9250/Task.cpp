@@ -81,7 +81,7 @@ namespace Sensors
       const uint8_t GYRO_YOUT_H = 0x45;
       const uint8_t GYRO_ZOUT_H = 0x47;
       
-      float declination = -1.75;
+      float declination = 1.75;
       float beta = 0.1f;
       float q0 = 1.0f;
       float q1 = 0.0f;
@@ -370,7 +370,7 @@ namespace Sensors
         float s0, s1, s2, s3;
         float qDot1, qDot2, qDot3, qDot4;
         float hx, hy;
-        float _2q0mx, _2q0my, _2q0mz, _2q1mx, _2bx, _2bz, _4bx, _4bz, _8bx, _8bz, _2q0, _2q1, _2q2, _2q3, _2q0q2, _2q2q3, q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3, q2q2, q2q3, q3q3;
+        float _2q0mx, _2q0my, _2q0mz, _2q1mx, _2bx, _2bz, _4bx, _4bz, _8bx, _8bz, _2q0, _2q1, _2q2, _2q3, q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3, q2q2, q2q3, q3q3;
         
         double now = Time::Clock::getSinceEpoch();
         double deltaT = now - lastUpdate;
@@ -406,8 +406,6 @@ namespace Sensors
           _2q1 = 2.0f * q1;
           _2q2 = 2.0f * q2;
           _2q3 = 2.0f * q3;
-          _2q0q2 = 2.0f * q0 * q2;
-          _2q2q3 = 2.0f * q2 * q3;
           q0q0 = q0 * q0;
           q0q1 = q0 * q1;
           q0q2 = q0 * q2;
