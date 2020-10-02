@@ -30,7 +30,7 @@
 // DUNE headers.
 #include <DUNE/DUNE.hpp>
 
-// Flags for status register #1.
+//! Flags for status register #1.
 #define STAT_DRDY 0b00000001  // Data Ready.
 #define STAT_OVL 0b00000010   // Overflow flag.
 #define STAT_DOR 0b00000100   // Data skipped for reading.
@@ -93,24 +93,6 @@ namespace Sensors
         .defaultValue("")
         .size(3)
         .description("Scale correction value");
-      }
-
-      //! Update internal state with new parameter values.
-      void
-      onUpdateParameters(void)
-      {
-      }
-
-      //! Reserve entity identifiers.
-      void
-      onEntityReservation(void)
-      {
-      }
-
-      //! Resolve entity names.
-      void
-      onEntityResolution(void)
-      {
       }
 
       //! Acquire resources.
@@ -241,8 +223,9 @@ namespace Sensors
         {
           readInput();
           dispatch(m_magn);
-          inf("%.6f\t%.6f\t%.6f", m_magn.x, m_magn.y, m_magn.z);
-          waitForMessages(1.0);
+          //inf("%.6f\t%.6f\t%.6f", m_magn.x, m_magn.y, m_magn.z);
+          //inf("Campo Mag. = %f", Angles::degrees(atan2(m_magn.y, m_magn.x)));
+          waitForMessages(0.2);
         }
       }
     };
