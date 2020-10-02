@@ -37,9 +37,6 @@
 
 namespace Sensors
 {
-  //! Insert short task description here.
-  //!
-  //! Insert explanation on task behaviour here.
   //! @author Jorge Ferreira
   namespace MPU9250
   {
@@ -72,7 +69,7 @@ namespace Sensors
       I2C* m_i2c;
       //! Device I2C address.
       const uint8_t dev_addr = 0x68;
-      //! WHO_AM_I register address.
+      //! Device registers addresses.
       const uint8_t WHO_AM_I = 0x75;
       const uint8_t PWR_MGMT_1 = 0x6B;
       const uint8_t ACCEL_CONFIG = 0x1C;
@@ -83,11 +80,8 @@ namespace Sensors
       const uint8_t GYRO_XOUT_H = 0x43;
       const uint8_t GYRO_YOUT_H = 0x45;
       const uint8_t GYRO_ZOUT_H = 0x47;
-    
-      //! Data registers of the magnetic sensor
-      const uint8_t xRegisterLSB = 0x00;
       
-      float declination = 0;
+      float declination = -1.75;
       float beta = 0.1f;
       float q0 = 1.0f;
       float q1 = 0.0f;
@@ -99,9 +93,6 @@ namespace Sensors
       //! Task arguments.
       Arguments m_args;
       
-      //! Constructor.
-      //! @param[in] name task name.
-      //! @param[in] ctx context.
       Task(const std::string& name, Tasks::Context& ctx):
         DUNE::Tasks::Task(name, ctx)
       {
@@ -167,7 +158,7 @@ namespace Sensors
           calibrateGyro(200);
       }
 
-      
+      //! Send data using the I2C protocol.
       void
       writeByte(uint8_t registerAddress, uint8_t value)
       {
@@ -177,7 +168,8 @@ namespace Sensors
         data[1] = value;
         m_i2c->write(data, 2);
       }
-    
+      
+      //! Read data using the I2C protocol.
       uint8_t
       readByte(const uint8_t* registerAddress)
       {
@@ -329,6 +321,7 @@ namespace Sensors
         return gyroRaw;
       }
       
+      //! Read raw data from the accelerometer and do some corrections
       void 
       readAccel()
       {
@@ -349,6 +342,7 @@ namespace Sensors
         dispatch(m_accel, DF_KEEP_TIME);
       }
       
+      //! Read raw data from the gyroscope and do some corrections
       void
       readGyro()
       {
@@ -473,7 +467,7 @@ namespace Sensors
         return tmp;
       }
 
-
+      //! Get Euler Angles and dispatch them.
       void computeEulerAngles()
       {
         double imc_tstamp = Clock::getSinceEpoch();
