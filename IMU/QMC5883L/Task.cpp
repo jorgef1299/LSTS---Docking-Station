@@ -37,7 +37,6 @@
 
 namespace Sensors
 {
-  //! @author Jorge Ferreira
   namespace QMC5883L
   {
     using DUNE_NAMESPACES;
