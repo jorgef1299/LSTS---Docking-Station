@@ -37,7 +37,6 @@
 
 namespace Sensors
 {
-  //! @author Jorge Ferreira
   namespace MPU9250
   {
     using DUNE_NAMESPACES;
