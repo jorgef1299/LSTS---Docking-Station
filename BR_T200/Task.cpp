@@ -35,23 +35,16 @@ namespace Actuators
   namespace BR_T200
   {
     using DUNE_NAMESPACES;
-    
+
     struct Task: public DUNE::Tasks::Task
     {
-      //! Name of pin to use.
-      char GPIOString[4];
-      //! Value to put in pinout.
-      char GPIOValue1[64];
-      char GPIOValue2[64];
-      //! Mode in/out of pinout.
-      char setValue[4];
-      char GPIODirection[64];
-      //! Handle of pwm pinout.
-      FILE* myOutputHandle;
-      //! Desired pulse width.
-      uint16_t desiredPW1 = 1500;
-      uint16_t desiredPW2 = 1500;
-      
+      const uint32_t period = 10000000;
+      uint32_t pulseWidth1 = 1500000;
+      uint32_t pulseWidth2 = 1500000;
+      uint8_t enable = 1;
+      char setValue[9];
+      FILE *myOutputHandle;
+
       Task(const std::string& name, Tasks::Context& ctx):
         DUNE::Tasks::Task(name, ctx)
       {
@@ -62,84 +55,111 @@ namespace Actuators
       void
       onResourceAcquisition(void)
       {
-        initGPIO(16, 1);
-        initGPIO(20, 2);
+        if ((myOutputHandle = fopen("/sys/class/pwm/pwmchip0/pwm0/period", "ab")) == NULL)
+        {
+          throw std::runtime_error("Unable to set PWM0 period.");
+          return;
+        }
+	sprintf(setValue, "%u", period);
+        fwrite(&setValue, sizeof(char), 7, myOutputHandle);
+        fwrite(&setValue, sizeof(char), 8, myOutputHandle);
+        fclose(myOutputHandle);
+        if ((myOutputHandle = fopen("/sys/class/pwm/pwmchip0/pwm1/period", "ab")) == NULL)
+        {
+          throw std::runtime_error("Unable to set PWM1 period.");
+          return;
+        }
+        fwrite(&setValue, sizeof(char), 8, myOutputHandle);
+        fclose(myOutputHandle);
+        if ((myOutputHandle = fopen("/sys/class/pwm/pwmchip0/pwm0/duty_cycle", "ab")) == NULL)
+        {
+          throw std::runtime_error("Unable to set PWM0 duty-cycle.");
+          return;
+        }
+	sprintf(setValue, "%u", pulseWidth1);
+        fwrite(&setValue, sizeof(char), 7, myOutputHandle);
+        fclose(myOutputHandle);
+        if ((myOutputHandle = fopen("/sys/class/pwm/pwmchip0/pwm1/duty_cycle", "ab")) == NULL)
+        {
+          throw std::runtime_error("Unable to set PWM1 duty-cycle.");
+          return;
+        }
+        sprintf(setValue, "%u", pulseWidth2);
+        fwrite(&setValue, sizeof(char), 7, myOutputHandle);
+        fclose(myOutputHandle);
+        if ((myOutputHandle = fopen("/sys/class/pwm/pwmchip0/pwm0/enable", "ab")) == NULL)
+        {
+          throw std::runtime_error("Unable to set PWM0 enable.");
+          return;
+        }
+        fwrite(&enable, sizeof(uint8_t), 1, myOutputHandle);
+        fclose(myOutputHandle);
+        if ((myOutputHandle = fopen("/sys/class/pwm/pwmchip0/pwm1/enable", "ab")) == NULL)
+        {
+          throw std::runtime_error("Unable to set PWM1 enable.");
+          return;
+        }
+        fwrite(&enable, sizeof(uint8_t), 1, myOutputHandle);
+        fclose(myOutputHandle);
       }
 
-      bool
-      initGPIO(int gpioPin, uint8_t thrusterNumber)
-      {
-        sprintf(GPIOString, "%d", gpioPin);
-        sprintf(GPIODirection, "/sys/class/gpio/gpio%d/direction", gpioPin);
-        if(thrusterNumber == 1)
-          sprintf(GPIOValue1, "/sys/class/gpio/gpio%d/value", gpioPin);
-        else if(thrusterNumber == 2)
-          sprintf(GPIOValue2, "/sys/class/gpio/gpio%d/value", gpioPin);
-        // Export the pin
-        if ((myOutputHandle = fopen("/sys/class/gpio/export", "ab")) == NULL)
-        {
-          throw std::runtime_error("Unable to export GPIO pin");
-          return false;
-        }
-        strcpy(setValue, GPIOString);
-        fwrite(&setValue, sizeof(char), 2, myOutputHandle);
-        fclose(myOutputHandle);
-        // Set direction of the pin to an output
-        if ((myOutputHandle = fopen(GPIODirection, "rb+")) == NULL)
-        {
-          throw std::runtime_error("Unable to open direction handle");
-          return false;
-        }
-        strcpy(setValue,"out");
-        fwrite(&setValue, sizeof(char), 3, myOutputHandle);
-        fclose(myOutputHandle);
-
-        return true;
-      }
-      
       void
       consume(const IMC::SetThrusterActuation* msg)
       {
-        if(msg->id == 1)
-          desiredPW1 = 1100 + 400 * (msg->value + 1);
-        else if(msg->id == 2)
-          desiredPW2 = 1100 + 400 * (msg->value + 1);
+        if(msg->id == 0)
+        {
+          pulseWidth1 = (1100 + 400 * (msg->value + 1)) * 1000;
+          if ((myOutputHandle = fopen("/sys/class/pwm/pwmchip0/pwm0/duty_cycle", "ab")) == NULL)
+          {
+            throw std::runtime_error("Unable to set PWM0 duty-cycle.");
+            return;
+          }
+          sprintf(setValue, "%u", pulseWidth1);
+          fwrite(&setValue, sizeof(char), 7, myOutputHandle);
+          fclose(myOutputHandle);
+        }
+        else if(msg->id == 1)
+        {
+          pulseWidth2 = (1100 + 400 * (msg->value + 1)) * 1000;
+          if ((myOutputHandle = fopen("/sys/class/pwm/pwmchip0/pwm1/duty_cycle", "ab")) == NULL)
+          {
+            throw std::runtime_error("Unable to set PWM1 duty-cycle.");
+            return;
+          }
+          sprintf(setValue, "%u", pulseWidth2);
+          fwrite(&setValue, sizeof(char), 7, myOutputHandle);
+          fclose(myOutputHandle);
+        }
       }
-      
+
+      //! Release resources.
       void
-      setPW(uint8_t thrusterNumber, uint16_t pwValue, char* gpioValue)
+      onResourceRelease(void)
       {
-        // Set output to high.
-        if ((myOutputHandle = fopen(gpioValue, "rb+")) == NULL)
-          throw std::runtime_error("ERROR PinOut!");
-        strcpy(setValue, "1"); // Set value high
-        fwrite(&setValue, sizeof(char), 1, myOutputHandle);
+        enable = 0;
+        if ((myOutputHandle = fopen("/sys/class/pwm/pwmchip0/pwm0/enable", "ab")) == NULL)
+        {
+          throw std::runtime_error("Unable to set PWM0 enable.");
+          return;
+        }
+        fwrite(&enable, sizeof(uint8_t), 1, myOutputHandle);
         fclose(myOutputHandle);
-        Delay::waitUsec(pwValue);
-        inf("UM");
-        
-        // Set output to low.
-        if ((myOutputHandle = fopen(gpioValue, "rb+")) == NULL)
-          throw std::runtime_error("ERROR PinOut!");
-        strcpy(setValue, "0"); // Set value low
-        fwrite(&setValue, sizeof(char), 1, myOutputHandle);
-        fclose(myOutputHandle);;
-        Delay::waitUsec(8000 - pwValue);
-        inf("Zero");
+        if ((myOutputHandle = fopen("/sys/class/pwm/pwmchip0/pwm1/enable", "ab")) == NULL)
+        {
+          throw std::runtime_error("Unable to set PWM1 enable.");
+          return;
+        }
+        fwrite(&enable, sizeof(uint8_t), 1, myOutputHandle);
+        fclose(myOutputHandle);
       }
 
       //! Main loop.
       void
       onMain(void)
       {
-        setPW(1, 1500, GPIOValue1);
-        setPW(2, 1500, GPIOValue1);
-        Delay::wait(5);
         while (!stopping())
         {
           consumeMessages();
-          setPW(1, desiredPW1, GPIOValue1);
-          setPW(2, desiredPW2, GPIOValue2);
         }
       }
     };
