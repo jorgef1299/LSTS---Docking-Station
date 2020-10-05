@@ -123,7 +123,7 @@ namespace Sensors
       {
         for (int i = 0; i < 10; i++) 
           MadgwickUpdate(m_ang_vel.x, -m_ang_vel.y, -m_ang_vel.z, -m_accel.x, m_accel.y, m_accel.z, msg->x, -msg->y, -msg->z);
-        computeEulerAngles();
+	 computeEulerAngles();
       }
 
       //! Acquire resources.
@@ -467,15 +467,14 @@ namespace Sensors
       //! Get Euler Angles and dispatch them.
       void computeEulerAngles()
       {
-        double imc_tstamp = Clock::getSinceEpoch();
-        
+	double imc_tstamp = Clock::getSinceEpoch();
         m_euler.phi = Angles::normalizeRadian(atan2f(q0*q1 + q2*q3, 0.5f - q1*q1 - q2*q2));
         m_euler.theta = Angles::normalizeRadian(asinf(-2.0f * (q1*q3 - q0*q2)));
         m_euler.psi_magnetic = Angles::normalizeRadian(atan2f(q1*q2 + q0*q3, 0.5f - q2*q2 - q3*q3));
         m_euler.psi = Angles::normalizeRadian(m_euler.psi_magnetic + Angles::radians(declination));
         m_euler.setTimeStamp(imc_tstamp);
-        inf("%f\t%f\t%f", Angles::degrees(m_euler.phi), Angles::degrees(m_euler.theta), Angles::degrees(m_euler.psi));
-        dispatch(m_euler);
+	dispatch(m_euler, DF_KEEP_TIME);
+
       }
 
       //! Main loop.
@@ -484,9 +483,9 @@ namespace Sensors
       {
         while (!stopping())
         {
+	  consumeMessages();
           readGyro();
           readAccel();
-          consumeMessages();
         }
       }
     };
@@ -494,3 +493,4 @@ namespace Sensors
 }
 
 DUNE_TASK
+
