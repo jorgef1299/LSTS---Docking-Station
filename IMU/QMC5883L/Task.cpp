@@ -206,9 +206,9 @@ namespace Sensors
         while (!stopping())
         {
           readInput();
-          dispatch(m_magn);
+          dispatch(m_magn, DF_KEEP_TIME);
           //inf("%.6f\t%.6f\t%.6f", m_magn.x, m_magn.y, m_magn.z);
-          //inf("Campo Mag. = %f", Angles::degrees(atan2(m_magn.y, m_magn.x)));
+         // inf("Campo Mag. = %f", Angles::degrees(atan2(m_magn.y, m_magn.x)));
           waitForMessages(0.2);
         }
       }
@@ -217,3 +217,4 @@ namespace Sensors
 }
 
 DUNE_TASK
+
