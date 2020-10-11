@@ -35,14 +35,14 @@ int main(int argc, char *argv[]) {
 
   // Set Area filtering parameters
   params.filterByArea = true;
-  params.minArea = 5000;
+  params.minArea = 1000;
 
   cap.read(cap_frame);
   params.maxArea = 4*M_PI*pow(cap_frame.rows/4, 2); //Max Blob Area, considerind ROI
 
   // Set Circularity filtering parameters (1=true circle)
   params.filterByCircularity = true;
-  params.minCircularity = 0.5;
+  params.minCircularity = 0.8;
 
   // Set Convexity filtering parameters
   params.filterByConvexity = true;
@@ -64,8 +64,8 @@ int main(int argc, char *argv[]) {
     cvtColor(cap_frame, cap_frame, COLOR_BGR2HSV);
 
     // Detect the object based on HSV Range Values (returns monochromatic image)
-    inRange(cap_frame, Scalar(15, 0, 0),
-            Scalar(165, 255, 255), cap_frame);
+    inRange(cap_frame, Scalar(10, 0, 0),
+            Scalar(170, 255, 255), cap_frame);
 
     GaussianBlur(cap_frame, cap_frame, Size(7, 7), 1);
     morphologyEx(cap_frame, cap_frame, MORPH_CLOSE, kernel); 
@@ -86,6 +86,7 @@ int main(int argc, char *argv[]) {
     }
     
     imshow("Blob Detection", im_with_keypoints);
+    // imshow("Blob Detection", cap_frame);
 
     if ((char)waitKey(30) == 27)
       break;
