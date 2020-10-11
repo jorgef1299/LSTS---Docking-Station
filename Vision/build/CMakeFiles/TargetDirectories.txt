@@ -1,0 +1,5 @@
+/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/CMakeFiles/edit_cache.dir
+/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/CMakeFiles/rebuild_cache.dir
+/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/CMakeFiles/blob.dir
+/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/CMakeFiles/template_matching.dir
+/home/alexandre/Documents/Work/LSTS/asv_project/LSTS---Docking-Station/Vision/build/CMakeFiles/circle_detection.dir
