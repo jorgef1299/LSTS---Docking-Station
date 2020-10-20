@@ -82,6 +82,12 @@ int main(int argc, char *argv[]) {
 
   while (true) {
     cap.read(cap_frame);
+    
+    // UNDISTORTION
+    // undistort(cap_frame, calib_frame, camera_matrix, dist_coefs);
+
+    // imshow("Original Frame", cap_frame);
+    // imshow("Calib Frame", cap_frame);
 
     use_only_ROI(cap_frame);
     
@@ -108,12 +114,6 @@ int main(int argc, char *argv[]) {
     }
     
     imshow("Blob Detection", im_with_keypoints);
-
-    // UNDISTORTION
-    // undistort(cap_frame, calib_frame, camera_matrix, dist_coefs);
-
-    // imshow("Original Frame", cap_frame);
-    // imshow("Calib Frame", cap_frame);
 
     if ((char)waitKey(30) == 27)
       break;
