@@ -123,32 +123,6 @@ blob/fast:
 	$(MAKE) -f CMakeFiles/blob.dir/build.make CMakeFiles/blob.dir/build
 .PHONY : blob/fast
 
-#=============================================================================
-# Target rules for targets named template_matching
-
-# Build rule for target.
-template_matching: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 template_matching
-.PHONY : template_matching
-
-# fast build rule for target.
-template_matching/fast:
-	$(MAKE) -f CMakeFiles/template_matching.dir/build.make CMakeFiles/template_matching.dir/build
-.PHONY : template_matching/fast
-
-#=============================================================================
-# Target rules for targets named circle_detection
-
-# Build rule for target.
-circle_detection: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 circle_detection
-.PHONY : circle_detection
-
-# fast build rule for target.
-circle_detection/fast:
-	$(MAKE) -f CMakeFiles/circle_detection.dir/build.make CMakeFiles/circle_detection.dir/build
-.PHONY : circle_detection/fast
-
 blob.o: blob.cpp.o
 
 .PHONY : blob.o
@@ -176,60 +150,6 @@ blob.cpp.s:
 	$(MAKE) -f CMakeFiles/blob.dir/build.make CMakeFiles/blob.dir/blob.cpp.s
 .PHONY : blob.cpp.s
 
-circle_detection.o: circle_detection.cpp.o
-
-.PHONY : circle_detection.o
-
-# target to build an object file
-circle_detection.cpp.o:
-	$(MAKE) -f CMakeFiles/circle_detection.dir/build.make CMakeFiles/circle_detection.dir/circle_detection.cpp.o
-.PHONY : circle_detection.cpp.o
-
-circle_detection.i: circle_detection.cpp.i
-
-.PHONY : circle_detection.i
-
-# target to preprocess a source file
-circle_detection.cpp.i:
-	$(MAKE) -f CMakeFiles/circle_detection.dir/build.make CMakeFiles/circle_detection.dir/circle_detection.cpp.i
-.PHONY : circle_detection.cpp.i
-
-circle_detection.s: circle_detection.cpp.s
-
-.PHONY : circle_detection.s
-
-# target to generate assembly for a file
-circle_detection.cpp.s:
-	$(MAKE) -f CMakeFiles/circle_detection.dir/build.make CMakeFiles/circle_detection.dir/circle_detection.cpp.s
-.PHONY : circle_detection.cpp.s
-
-template_matching.o: template_matching.cpp.o
-
-.PHONY : template_matching.o
-
-# target to build an object file
-template_matching.cpp.o:
-	$(MAKE) -f CMakeFiles/template_matching.dir/build.make CMakeFiles/template_matching.dir/template_matching.cpp.o
-.PHONY : template_matching.cpp.o
-
-template_matching.i: template_matching.cpp.i
-
-.PHONY : template_matching.i
-
-# target to preprocess a source file
-template_matching.cpp.i:
-	$(MAKE) -f CMakeFiles/template_matching.dir/build.make CMakeFiles/template_matching.dir/template_matching.cpp.i
-.PHONY : template_matching.cpp.i
-
-template_matching.s: template_matching.cpp.s
-
-.PHONY : template_matching.s
-
-# target to generate assembly for a file
-template_matching.cpp.s:
-	$(MAKE) -f CMakeFiles/template_matching.dir/build.make CMakeFiles/template_matching.dir/template_matching.cpp.s
-.PHONY : template_matching.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -239,17 +159,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... blob"
-	@echo "... template_matching"
-	@echo "... circle_detection"
 	@echo "... blob.o"
 	@echo "... blob.i"
 	@echo "... blob.s"
-	@echo "... circle_detection.o"
-	@echo "... circle_detection.i"
-	@echo "... circle_detection.s"
-	@echo "... template_matching.o"
-	@echo "... template_matching.i"
-	@echo "... template_matching.s"
 .PHONY : help
 
 
