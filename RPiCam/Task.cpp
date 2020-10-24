@@ -137,7 +137,7 @@ struct Task : public DUNE::Tasks::Task {
 
     calib_data.roi = {7, 13, 623, 453};
 
-    remap(cap_frame, cap_frame, map1, map2, INTER_LINEAR);
+    remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
     cropROI(cap_frame, calib_data);
 
     cap.read(cap_frame);
