@@ -47,31 +47,30 @@ struct FrameCalibrationParemeters {
   int roi[4];
 };
 
-void undistortionMaps(Mat &map_1, Mat &map_2, VideoCapture &cap,
+void undistortionMaps(cv::Mat &map_1, cv::Mat &map_2, cv::VideoCapture &cap,
                       struct FrameCalibrationParameters const &data) {
 
   if (map_1 == NULL || map_2 == NULL) {
     // error msg;
   }
 
-  Mat temp;
-  Mat camera_matrix, dist_coefs;
-  Mat map_1, map_2;
+  cv::Mat temp;
+  cv::Mat camera_matrix, dist_coefs;
 
   cap.read(temp);
   map_1 = Mat(temp.size(), CV_32F);
   map_2 = Mat(temp.size(), CV_32F);
 
-  camera_matrix = Mat(3, 3, CV_32F, data.cam_matrix_data);
-  dist_coefs = Mat(1, 5, CV_32F, data.dist_matrix_data);
+  camera_matrix = cv::Mat(3, 3, CV_32F, data.cam_matrix_data);
+  dist_coefs = cv::Mat(1, 5, CV_32F, data.dist_matrix_data);
 
-  initUndistortRectifyMap(camera_matrix, dist_coefs, Mat(), camera_matrix,
+  initUndistortRectifyMap(camera_matrix, dist_coefs, cv::Mat(), camera_matrix,
                           temp.size(), CV_32F, map_1, map_2);
 }
 
-void cropROI(Mat &frame, struct FrameCalibrationParameters const &data) {
+void cropROI(cv::Mat &frame, struct FrameCalibrationParameters const &data) {
 
-  Rect new_roi = Rect(data.roi[0], data.roi[1], data.roi[2], data.roi[3]);
+  Rect new_roi = cv::Rect(data.roi[0], data.roi[1], data.roi[2], data.roi[3]);
   frame = frame(new_roi);
 }
 
