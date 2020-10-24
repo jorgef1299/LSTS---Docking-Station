@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/pi/LSTS---Docking-Station/Vision/calib.cpp
+iostream
+-
+opencv2/opencv.hpp
+-
+opencv2/features2d.hpp
+-
+opencv2/calib3d.hpp
+-
+opencv2/highgui.hpp
+-
+opencv2/imgproc.hpp
+-
+

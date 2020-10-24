@@ -1,0 +1,4 @@
+/home/pi/LSTS---Docking-Station/Vision/build/CMakeFiles/edit_cache.dir
+/home/pi/LSTS---Docking-Station/Vision/build/CMakeFiles/rebuild_cache.dir
+/home/pi/LSTS---Docking-Station/Vision/build/CMakeFiles/blob.dir
+/home/pi/LSTS---Docking-Station/Vision/build/CMakeFiles/calib.dir
