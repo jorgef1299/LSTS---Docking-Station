@@ -59,7 +59,7 @@ struct FrameCalibrationParemeters {
 };
 
 void undistortionMaps(cv::Mat &map_1, cv::Mat &map_2, cv::VideoCapture &cap,
-                      struct FrameCalibrationParameters &data) {
+                      FrameCalibrationParameters &data) {
 
   cv::Mat temp;
   cv::Mat camera_matrix, dist_coefs;
@@ -75,7 +75,7 @@ void undistortionMaps(cv::Mat &map_1, cv::Mat &map_2, cv::VideoCapture &cap,
                           temp.size(), CV_32F, map_1, map_2);
 }
 
-void cropROI(cv::Mat &frame, struct FrameCalibrationParameters const &data) {
+void cropROI(cv::Mat &frame, FrameCalibrationParameters const &data) {
 
   cv::Rect new_roi = cv::Rect(data.roi[0], data.roi[1], data.roi[2], data.roi[3]);
   frame = frame(new_roi);
