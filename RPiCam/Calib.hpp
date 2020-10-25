@@ -47,10 +47,10 @@ const float intrinsic_parameters[9] = {
 const float distortion_coeficients[5] = {-0.4624503562479969, -0.43432558990654135,
                           0.001974482671297278, -0.008023538703377298,
                           2.9986277588121113};
-//! ROI to apply after calibration
+//! Distortion Coeficients
 const float roi_limits[4] = {7, 13, 623, 453};
 
-void undistortionMaps(void) {
+void undistortionMaps(cv::Mat &map_1, cv::Mat &map_2, cv::VideoCapture &cap) {
 
   cv::Mat temp;
   cv::Mat camera_matrix, dist_coefs;

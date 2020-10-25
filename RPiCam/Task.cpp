@@ -114,7 +114,7 @@ struct Task : public DUNE::Tasks::Task {
     cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
 
-    undistortionMaps(); 
+    undistortionMaps(map_1, map_2, cap); 
   }
 
   //! Release resources.
