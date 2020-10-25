@@ -66,7 +66,7 @@ struct Task : public DUNE::Tasks::Task {
   double heading_ref;
   
   //! Calibration parameters
-  FrameCalibrationParemeters calib_data;
+  FrameCalibrationParameters calib_data;
   //! Task Arguments
   Arguments m_args;
 

@@ -49,7 +49,7 @@ float distortion_coeficients[5] = {-0.4624503562479969, -0.43432558990654135,
 
 float roi_limits[4] = {7, 13, 623, 453};
 
-struct FrameCalibrationParemeters {
+struct FrameCalibrationParameters {
   //! Intrinsic Parameters
   float cam_matrix_data[9];
   //! Distortion Coeficients
