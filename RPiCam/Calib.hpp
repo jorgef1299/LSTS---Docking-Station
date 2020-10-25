@@ -38,28 +38,19 @@ namespace Vision {
 using DUNE_NAMESPACES;
 namespace RPiCam {
 
-float intrinsic_parameters[9] = {
+//! Intrinsic Parameters
+const float intrinsic_parameters[9] = {
 681.9474487304688,    0.000000000000000000, 279.387553359592862,
 0.000000000000000000, 679.4100341796875,    240.90015807337113,
 0.000000000000000000, 0.000000000000000000, 1.000000000000000000};
-
-float distortion_coeficients[5] = {-0.4624503562479969, -0.43432558990654135,
+//! Distortion Coeficients
+const float distortion_coeficients[5] = {-0.4624503562479969, -0.43432558990654135,
                           0.001974482671297278, -0.008023538703377298,
                           2.9986277588121113};
+//! ROI to apply after calibration
+const float roi_limits[4] = {7, 13, 623, 453};
 
-float roi_limits[4] = {7, 13, 623, 453};
-
-struct FrameCalibrationParameters {
-  //! Intrinsic Parameters
-  float cam_matrix_data[9];
-  //! Distortion Coeficients
-  float dist_matrix_data[5];
-  //! Region of interest used after calibration
-  int roi[4];
-};
-
-void undistortionMaps(cv::Mat &map_1, cv::Mat &map_2, cv::VideoCapture &cap,
-                      FrameCalibrationParameters &data) {
+void undistortionMaps(void) {
 
   cv::Mat temp;
   cv::Mat camera_matrix, dist_coefs;
@@ -68,16 +59,16 @@ void undistortionMaps(cv::Mat &map_1, cv::Mat &map_2, cv::VideoCapture &cap,
   map_1 = cv::Mat(temp.size(), CV_32F);
   map_2 = cv::Mat(temp.size(), CV_32F);
 
-  camera_matrix = cv::Mat(3, 3, CV_32F, data.cam_matrix_data);
-  dist_coefs = cv::Mat(1, 5, CV_32F, data.dist_matrix_data);
+  camera_matrix = cv::Mat(3, 3, CV_32F, intrinsic_parameters);
+  dist_coefs = cv::Mat(1, 5, CV_32F, distortion_coeficients);
 
   initUndistortRectifyMap(camera_matrix, dist_coefs, cv::Mat(), camera_matrix,
                           temp.size(), CV_32F, map_1, map_2);
 }
 
-void cropROI(cv::Mat &frame, FrameCalibrationParameters const &data) {
+void cropROI(cv::Mat &frame) {
 
-  cv::Rect new_roi = cv::Rect(data.roi[0], data.roi[1], data.roi[2], data.roi[3]);
+  cv::Rect new_roi = cv::Rect(roi_limits[0], roi_limits[1], roi_limits[2], roi_limits[3]);
   frame = frame(new_roi);
 }
 

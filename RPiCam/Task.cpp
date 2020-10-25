@@ -64,9 +64,7 @@ struct Task : public DUNE::Tasks::Task {
   
   //! Heading reference to aim
   double heading_ref;
-  
-  //! Calibration parameters
-  FrameCalibrationParameters calib_data;
+
   //! Task Arguments
   Arguments m_args;
 
@@ -116,11 +114,7 @@ struct Task : public DUNE::Tasks::Task {
     cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
 
-    memcpy(calib_data.cam_matrix_data, intrinsic_parameters, sizeof(intrinsic_parameters));
-    memcpy(calib_data.dist_matrix_data, distortion_coeficients, sizeof(distortion_coeficients));
-    memcpy(calib_data.roi, roi_limits, sizeof(roi_limits));
-
-    undistortionMaps(map_1, map_2, cap, calib_data); 
+    undistortionMaps(); 
   }
 
   //! Release resources.
@@ -132,7 +126,7 @@ struct Task : public DUNE::Tasks::Task {
   void redCircleDetection(void) {
     
     remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
-    cropROI(cap_frame, calib_data);
+    cropROI(cap_frame);
 
     cap.read(cap_frame);
     imshow("debug window", cap_frame);
