@@ -39,16 +39,16 @@ using DUNE_NAMESPACES;
 namespace RPiCam {
 
 //! Intrinsic Parameters
-const float intrinsic_parameters[9] = {
+float intrinsic_parameters[9] = {
 681.9474487304688,    0.000000000000000000, 279.387553359592862,
 0.000000000000000000, 679.4100341796875,    240.90015807337113,
 0.000000000000000000, 0.000000000000000000, 1.000000000000000000};
 //! Distortion Coeficients
-const float distortion_coeficients[5] = {-0.4624503562479969, -0.43432558990654135,
+float distortion_coeficients[5] = {-0.4624503562479969, -0.43432558990654135,
                           0.001974482671297278, -0.008023538703377298,
                           2.9986277588121113};
 //! Distortion Coeficients
-const float roi_limits[4] = {7, 13, 623, 453};
+float roi_limits[4] = {7, 13, 623, 453};
 
 void undistortionMaps(cv::Mat &map_1, cv::Mat &map_2, cv::VideoCapture &cap) {
 
