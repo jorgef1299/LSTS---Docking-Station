@@ -31,6 +31,7 @@
 #include <DUNE/DUNE.hpp>
 
 #include "Calib.hpp"
+#include <cstring>
 
 namespace Vision {
 //! Insert short task description here.
@@ -115,7 +116,11 @@ struct Task : public DUNE::Tasks::Task {
     cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
 
-    undistortionMaps(map_1, map_2, cap, calib_data);
+    memcpy(calib_data.cam_matrix_data, intrinsic_parameters, sizeof(intrinsic_parameters));
+    memcpy(calib_data.dist_matrix_data, distortion_coeficients, sizeof(distortion_coeficients));
+    memcpy(calib_data.roi, roi_limits, sizeof(roi_limits));
+
+    undistortionMaps(map_1, map_2, cap, calib_data); 
   }
 
   //! Release resources.
@@ -126,17 +131,6 @@ struct Task : public DUNE::Tasks::Task {
   //! Red Circle Detection
   void redCircleDetection(void) {
     
-    calib_data.cam_matrix_data = {
-    681.9474487304688,    0.000000000000000000, 279.387553359592862,
-    0.000000000000000000, 679.4100341796875,    240.90015807337113,
-    0.000000000000000000, 0.000000000000000000, 1.000000000000000000};
-
-    calib_data.dist_matrix_data = {-0.4624503562479969, -0.43432558990654135,
-                             0.001974482671297278, -0.008023538703377298,
-                             2.9986277588121113};
-
-    calib_data.roi = {7, 13, 623, 453};
-
     remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
     cropROI(cap_frame, calib_data);
 
