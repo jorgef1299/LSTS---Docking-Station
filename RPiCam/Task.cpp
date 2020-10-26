@@ -111,6 +111,11 @@ struct Task : public DUNE::Tasks::Task {
 
   //! Initialize resources.
   void onResourceInitialization(void) {
+    if (!cap.isOpened()) 
+      return;
+      
+    inf("Camera opened succesfully");
+    
     cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
 
@@ -125,18 +130,15 @@ struct Task : public DUNE::Tasks::Task {
   //! Red Circle Detection
   void redCircleDetection(void) {
     
-    remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
+    cv::remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
     cropROI(cap_frame);
 
     cap.read(cap_frame);
-    imshow("debug window", cap_frame);
+    cv::imshow("debug window", cap_frame);
   }
 
   //! Main loop.
   void onMain(void) {
-    if (!cap.isOpened()) // check if we succeeded
-      return;
-
     while (!stopping()) {
       
       redCircleDetection();

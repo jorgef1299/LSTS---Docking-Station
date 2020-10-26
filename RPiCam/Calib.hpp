@@ -62,7 +62,7 @@ void undistortionMaps(cv::Mat &map_1, cv::Mat &map_2, cv::VideoCapture &cap) {
   camera_matrix = cv::Mat(3, 3, CV_32F, intrinsic_parameters);
   dist_coefs = cv::Mat(1, 5, CV_32F, distortion_coeficients);
 
-  initUndistortRectifyMap(camera_matrix, dist_coefs, cv::Mat(), camera_matrix,
+  cv::initUndistortRectifyMap(camera_matrix, dist_coefs, cv::Mat(), camera_matrix,
                           temp.size(), CV_32F, map_1, map_2);
 }
 
