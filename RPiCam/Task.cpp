@@ -137,7 +137,7 @@ struct Task : public DUNE::Tasks::Task {
     cv::imshow("debug window", cap_frame);
     
     //used only to debug
-    cv::waitKey(100));
+    cv::waitKey(100);
   }
 
   //! Main loop.
