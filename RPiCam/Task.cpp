@@ -107,15 +107,15 @@ struct Task : public DUNE::Tasks::Task {
   void onResourceAcquisition(void) {
     setEntityState(IMC::EntityState::ESTA_NORMAL, Status::CODE_ACTIVE);
     cap.open(0);
-  }
 
-  //! Initialize resources.
-  void onResourceInitialization(void) {
     if (!cap.isOpened()) 
       return;
       
     inf("Camera opened succesfully");
-    
+  }
+
+  //! Initialize resources.
+  void onResourceInitialization(void) {    
     cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
 
