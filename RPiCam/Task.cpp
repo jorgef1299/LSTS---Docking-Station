@@ -105,22 +105,19 @@ struct Task : public DUNE::Tasks::Task {
 
   //! Acquire resources.
   void onResourceAcquisition(void) {
+    
     setEntityState(IMC::EntityState::ESTA_NORMAL, Status::CODE_ACTIVE);
+    
     cap.open(0);
-    inf("Entered on ORAcquisition");
+    
     if (!cap.isOpened()){
       inf("Unable to open camera");
       return;
     }
-  
-
-    inf("Camera opened succesfully");
   }
 
   //! Initialize resources.
   void onResourceInitialization(void) {    
-  
-    inf("Entered on ORInit");
     cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
 
@@ -135,14 +132,14 @@ struct Task : public DUNE::Tasks::Task {
   //! Red Circle Detection
   void redCircleDetection(void) {
     
-    // cv::remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
-    // cropROI(cap_frame);
+    cv::remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
+    cropROI(cap_frame);
 
     cap.read(cap_frame);
-    // cv::imshow("debug window", cap_frame);
+    cv::imshow("debug window", cap_frame);
     
     //used only to debug
-    cv::waitKey(100);
+    cv::waitKey(1000);
   }
 
   //! Main loop.
