@@ -112,7 +112,8 @@ struct Task : public DUNE::Tasks::Task {
       inf("Unable to open camera")
       return;
     }
-      
+  
+    
     inf("Camera opened succesfully");
   }
 
