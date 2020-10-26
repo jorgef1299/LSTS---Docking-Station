@@ -130,8 +130,8 @@ struct Task : public DUNE::Tasks::Task {
   //! Red Circle Detection
   void redCircleDetection(void) {
     
-    cv::remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
-    cropROI(cap_frame);
+    // cv::remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
+    // cropROI(cap_frame);
 
     cap.read(cap_frame);
     cv::imshow("debug window", cap_frame);
