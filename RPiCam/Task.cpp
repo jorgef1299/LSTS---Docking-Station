@@ -108,8 +108,10 @@ struct Task : public DUNE::Tasks::Task {
     setEntityState(IMC::EntityState::ESTA_NORMAL, Status::CODE_ACTIVE);
     cap.open(0);
 
-    if (!cap.isOpened()) 
+    if (!cap.isOpened()){
+      inf("Unable to open camera")
       return;
+    }
       
     inf("Camera opened succesfully");
   }
@@ -144,6 +146,13 @@ struct Task : public DUNE::Tasks::Task {
   void onMain(void) {
     while (!stopping()) {
       
+      if (!cap.isOpened()){
+        inf("Unable to open camera")
+        return;
+      }
+        
+      inf("Camera opened succesfully");
+
       redCircleDetection();
             
       waitForMessages(1.0);
