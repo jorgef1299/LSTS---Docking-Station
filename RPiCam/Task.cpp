@@ -109,11 +109,11 @@ struct Task : public DUNE::Tasks::Task {
     cap.open(0);
     inf("Entered on ORAcquisition");
     if (!cap.isOpened()){
-      inf("Unable to open camera")
+      inf("Unable to open camera");
       return;
     }
   
-    
+
     inf("Camera opened succesfully");
   }
 
@@ -139,7 +139,7 @@ struct Task : public DUNE::Tasks::Task {
     // cropROI(cap_frame);
 
     cap.read(cap_frame);
-    cv::imshow("debug window", cap_frame);
+    // cv::imshow("debug window", cap_frame);
     
     //used only to debug
     cv::waitKey(100);
