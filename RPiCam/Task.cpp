@@ -107,7 +107,7 @@ struct Task : public DUNE::Tasks::Task {
   void onResourceAcquisition(void) {
     setEntityState(IMC::EntityState::ESTA_NORMAL, Status::CODE_ACTIVE);
     cap.open(0);
-
+    inf("Entered on ORAcquisition");
     if (!cap.isOpened()){
       inf("Unable to open camera")
       return;
@@ -118,6 +118,8 @@ struct Task : public DUNE::Tasks::Task {
 
   //! Initialize resources.
   void onResourceInitialization(void) {    
+  
+    inf("Entered on ORInit");
     cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
 
@@ -144,15 +146,10 @@ struct Task : public DUNE::Tasks::Task {
 
   //! Main loop.
   void onMain(void) {
+
+    inf("Entered on main");
     while (!stopping()) {
       
-      if (!cap.isOpened()){
-        inf("Unable to open camera")
-        return;
-      }
-        
-      inf("Camera opened succesfully");
-
       redCircleDetection();
             
       waitForMessages(1.0);
