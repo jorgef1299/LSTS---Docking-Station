@@ -71,6 +71,8 @@ struct Task : public DUNE::Tasks::Task {
   //! Detected circles centers vector
   std::vector<cv::KeyPoint> keypoints;
   
+  //! Deviation from center in x-axis
+  double delta_x;
   //! Heading reference to aim
   double heading_ref;
 
@@ -163,7 +165,28 @@ struct Task : public DUNE::Tasks::Task {
 
     cv::remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
     cropROI(cap_frame);
+    
+    //Color Detection
+    cv::cvtColor(cap_frame, cap_frame, cv::COLOR_BGR2HSV);
+    cv::inRange(cap_frame, cv::Scalar(10, 0, 0), cv::Scalar(170, 255, 255), cap_frame);
 
+    //Morphologic operations
+    cv::GaussianBlur(cap_frame, cap_frame, cv::Size(13, 13), 3);
+    cv::morphologyEx(cap_frame, cap_frame, cv::MORPH_CLOSE, kernel);
+    
+    //Detect circles
+    detector->detect(cap_frame, keypoints);
+
+    //temporary - delete when finished
+    drawKeypoints(cap_frame, keypoints, cap_frame, cv::Scalar(0, 0, 255),
+                  cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+                  
+    for (auto blob_iterator : keypoints) {
+      delta_x = blob_iterator.pt.x - cap_frame.cols / 2;
+      
+      inf(std::tostring(delta_x));
+    } 
+    
     cv::imshow("debug window", cap_frame);
     
     cv::waitKey(1000);
@@ -171,7 +194,7 @@ struct Task : public DUNE::Tasks::Task {
 
   //! Main loop.
   void onMain(void) {
-
+    
     while (!stopping()) {
       
       redCircleDetection();
