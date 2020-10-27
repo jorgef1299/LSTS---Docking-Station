@@ -180,11 +180,11 @@ struct Task : public DUNE::Tasks::Task {
     //temporary - delete when finished
     drawKeypoints(cap_frame, keypoints, cap_frame, cv::Scalar(0, 0, 255),
                   cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
-                  
+
     for (auto blob_iterator : keypoints) {
       delta_x = blob_iterator.pt.x - cap_frame.cols / 2;
       
-      inf(std::tostring(delta_x));
+      inf("Circle deviation from center : %.2f", delta_x);
     } 
     
     cv::imshow("debug window", cap_frame);
