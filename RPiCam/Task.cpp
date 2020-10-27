@@ -32,6 +32,7 @@
 
 #include "Calib.hpp"
 #include <cstring>
+#include <cmath>
 
 namespace Vision {
 //! Insert short task description here.
@@ -57,10 +58,18 @@ struct Task : public DUNE::Tasks::Task {
   uint16_t height;
   //! Video frame
   cv::Mat cap_frame;
-  //! Undistortion Map 1
+  //! Undistortion map 1
   cv::Mat map_1;
-  //! Undistortion Map 2
+  //! Undistortion map 2
   cv::Mat map_2;
+  //! Filter structuring element
+  cv::Mat kernel;
+  //! Circle detection parameters
+  cv::SimpleBlobDetector::Params params;
+  //! Blob algorithm detector object
+  cv::Ptr<cv::SimpleBlobDetector> detector;
+  //! Detected circles centers vector
+  std::vector<cv::KeyPoint> keypoints;
   
   //! Heading reference to aim
   double heading_ref;
@@ -122,6 +131,24 @@ struct Task : public DUNE::Tasks::Task {
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
 
     undistortionMaps(map_1, map_2, cap); 
+
+    kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(11, 11));
+
+    // Blob parameters
+    params.filterByArea = true;
+    params.minArea = 1000;
+    params.maxArea = 4 * M_PI * pow(width, 2);
+
+    params.filterByCircularity = true;
+    params.minCircularity = 0.8;
+
+    params.filterByConvexity = true;
+    params.minConvexity = 0.3;
+
+    params.filterByInertia = true;
+    params.minInertiaRatio = 0.01;
+
+    detector = cv::SimpleBlobDetector::create(params);
   }
 
   //! Release resources.
@@ -137,7 +164,7 @@ struct Task : public DUNE::Tasks::Task {
     cv::remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
     cropROI(cap_frame);
 
-    cv::imshow("debug remapped window", cap_frame);
+    cv::imshow("debug window", cap_frame);
     
     cv::waitKey(1000);
   }
