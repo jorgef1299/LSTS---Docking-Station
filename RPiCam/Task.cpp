@@ -136,14 +136,14 @@ struct Task : public DUNE::Tasks::Task {
     cropROI(cap_frame);
 
     cap.read(cap_frame);
+    cv::imshow("debug window", cap_frame);
     
     cv::waitKey(2000);
-    
-    cv::imshow("debug window", cap_frame);
   }
 
   //! Main loop.
   void onMain(void) {
+
     while (!stopping()) {
       
       redCircleDetection();
