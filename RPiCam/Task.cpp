@@ -143,7 +143,7 @@ struct Task : public DUNE::Tasks::Task {
 
     cv::imshow("debug remapped window", cap_frame);
     
-    Time::Delay::wait(2);
+    Time::Delay::wait(5);
   }
 
   //! Main loop.
