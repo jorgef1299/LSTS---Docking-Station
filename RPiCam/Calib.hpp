@@ -34,6 +34,8 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 
+#define MAX_PICAM_ANGLE 31.1
+
 namespace Vision {
 using DUNE_NAMESPACES;
 namespace RPiCam {

@@ -31,8 +31,8 @@
 #include <DUNE/DUNE.hpp>
 
 #include "Calib.hpp"
-#include <cstring>
 #include <cmath>
+#include <cstring>
 
 namespace Vision {
 //! Insert short task description here.
@@ -70,7 +70,7 @@ struct Task : public DUNE::Tasks::Task {
   cv::Ptr<cv::SimpleBlobDetector> detector;
   //! Detected circles centers vector
   std::vector<cv::KeyPoint> keypoints;
-  
+
   //! Deviation from center in x-axis
   double delta_x;
   //! Heading reference to aim
@@ -83,10 +83,8 @@ struct Task : public DUNE::Tasks::Task {
   //! @param[in] name task name.
   //! @param[in] ctx context.
   Task(const std::string &name, Tasks::Context &ctx)
-      : DUNE::Tasks::Task(name, ctx), 
-      frontal_dist(0.0),
-      width(640),
-      height(480) {
+      : DUNE::Tasks::Task(name, ctx), frontal_dist(0.0), width(640),
+        height(480) {
     paramActive(Tasks::Parameter::SCOPE_MANEUVER,
                 Tasks::Parameter::VISIBILITY_USER);
 
@@ -116,23 +114,23 @@ struct Task : public DUNE::Tasks::Task {
 
   //! Acquire resources.
   void onResourceAcquisition(void) {
-    
+
     setEntityState(IMC::EntityState::ESTA_NORMAL, Status::CODE_ACTIVE);
-    
+
     cap.open(0);
-    
-    if (!cap.isOpened()){
+
+    if (!cap.isOpened()) {
       inf("Unable to open camera");
       return;
     }
   }
 
   //! Initialize resources.
-  void onResourceInitialization(void) {    
+  void onResourceInitialization(void) {
     cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
 
-    undistortionMaps(map_1, map_2, cap); 
+    undistortionMaps(map_1, map_2, cap);
 
     kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(11, 11));
 
@@ -154,51 +152,55 @@ struct Task : public DUNE::Tasks::Task {
   }
 
   //! Release resources.
-  void onResourceRelease(void) {
-    cap.release();
+  void onResourceRelease(void) { 
+  
+    cap.release(); 
   }
 
   //! Red Circle Detection
   void redCircleDetection(void) {
-  
+
     cap.read(cap_frame);
 
     cv::remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
     cropROI(cap_frame);
-    
-    //Color Detection
-    cv::cvtColor(cap_frame, cap_frame, cv::COLOR_BGR2HSV);
-    cv::inRange(cap_frame, cv::Scalar(10, 0, 0), cv::Scalar(170, 255, 255), cap_frame);
 
-    //Morphologic operations
+    // Color Detection
+    cv::cvtColor(cap_frame, cap_frame, cv::COLOR_BGR2HSV);
+    cv::inRange(cap_frame, cv::Scalar(10, 0, 0), cv::Scalar(170, 255, 255),
+                cap_frame);
+
+    // Morphologic operations
     cv::GaussianBlur(cap_frame, cap_frame, cv::Size(13, 13), 3);
     cv::morphologyEx(cap_frame, cap_frame, cv::MORPH_CLOSE, kernel);
-    
-    //Detect circles
+
+    // Detect circles
     detector->detect(cap_frame, keypoints);
 
-    //temporary - delete when finished
+    // temporary - delete when finished
     drawKeypoints(cap_frame, keypoints, cap_frame, cv::Scalar(0, 0, 255),
                   cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
 
     for (auto blob_iterator : keypoints) {
+
       delta_x = blob_iterator.pt.x - cap_frame.cols / 2;
-      
-      inf("Circle deviation from center : %.2f", delta_x);
-    } 
-    
+
+      heading_ref =
+          atan(delta_x / cap_frame.cols * tan(MAX_PICAM_ANGLE * M_PI / 180));
+    }
+
     cv::imshow("debug window", cap_frame);
-    
+
     cv::waitKey(1000);
   }
 
   //! Main loop.
   void onMain(void) {
-    
+
     while (!stopping()) {
-      
+
       redCircleDetection();
-            
+
       waitForMessages(1.0);
     }
   }
