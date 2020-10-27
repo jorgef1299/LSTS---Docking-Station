@@ -134,12 +134,13 @@ struct Task : public DUNE::Tasks::Task {
   
     inf("repeating red circle detection");
 
+    cap.read(cap_frame);
+
     cv::imshow("debug original window", cap_frame);
 
     cv::remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
     cropROI(cap_frame);
 
-    cap.read(cap_frame);
     cv::imshow("debug remapped window", cap_frame);
     
     Time::Delay::wait(2);
