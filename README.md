@@ -13,6 +13,6 @@
 
 ``sudo apt-get install make``
 
-* [OpenCV](https://riptutorial.com/opencv/example/15781/build-and-install-opencv-from-source)
+* OpenCV
 
-* [Librpip](https://librpip.frasersdev.net/get/download/)
+* Librpip
