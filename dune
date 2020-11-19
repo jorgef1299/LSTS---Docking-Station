@@ -1,0 +1,106 @@
+ #!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          dune
+# Required-Start:    $local_fs $network $named $time $syslog
+# Required-Stop:     $local_fs $network $named $time $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: dune
+# Description:       dune daemon
+### END INIT INFO
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+dune_base='/opt/lsts/dune'
+
+cfg_dune=`hostname`
+
+maybe_upgrade()
+{
+    if ! [ -f $dune_base/dune-*.tar.bz2 ]; then
+        return 1
+    fi
+
+    echo -n "* Starting DUNE upgrade... "
+    rm -rf $dune_base/.dune-upgrade &&
+    mkdir $dune_base/.dune-upgrade &&
+    tar -x -C $dune_base/.dune-upgrade -f $dune_base/dune-*.tar.bz2 &&
+    if [ -f $dune_base/etc/*-saved.ini ]; then
+        cp "$dune_base/etc/"*-saved.ini "$dune_base/.dune-upgrade/"dune-*/etc 2> /dev/null
+    fi &&
+    rm $dune_base/dune-*.tar.bz2 &&
+    for dir in $dune_base/.dune-upgrade/dune-*/*; do
+        d="$(basename "$dir")"
+        rm -rf "$dune_base/$d"
+        mv "$dir" $dune_base
+    done
+
+    rm -rf $dune_base/.dune-upgrade
+    echo "done"
+}
+
+start()
+{
+    maybe_upgrade
+    if [ -n "$cfg_dune_i18n" ]; then
+        export LC_MESSAGES="$cfg_dune_i18n"
+    fi
+
+    $dune_base/bin/dune-launcher -m -p Hardware -c "$cfg_dune" < /dev/null > /dev/null 2>&1 &
+}
+
+stop()
+{
+    while [ 1 ]; do
+        echo "* Stopping process..."
+        killall dune-launcher > /dev/null 2>&1
+        killall dune > /dev/null 2>&1
+
+        for r in 0 1 2 3 4 5 6 7 8 9; do
+            if [ -n "$(pidof dune)" ]; then
+                echo "* Waiting for process to exit ($r)..."
+                sleep 1
+            else
+                echo "* Process not running."
+                return 1
+            fi
+        done
+        echo "* Forcing exit..."
+        killall -9 dune-launcher > /dev/null 2>&1
+        killall -9 dune > /dev/null 2>&1
+        sleep 1
+    done
+}
+
+restart()
+{
+	stop
+	sleep 4
+	start
+}
+
+debug()
+{
+        echo "Running Debug"
+	/root/git/build/dune-launcher -m -p Hardware -c "$cfg_dune" < /dev/null > /dev/null 2>&1 &
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+        stop)
+            stop
+            ;;
+        restart)
+            restart
+            ;;
+        debug)
+            debug
+            ;;
+        *)
+            echo "Usage: dune [start,stop,restart]"
+            exit 1
+            ;;
+esac
