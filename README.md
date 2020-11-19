@@ -6,6 +6,7 @@
 ``sudo apt-get install cmake``
 
 * Curses based user interface for CMake
+
 ``sudo apt install cmake-curses-gui``
 
 * GNU Make or other POSIX Make.
