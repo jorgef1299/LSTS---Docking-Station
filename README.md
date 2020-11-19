@@ -1,4 +1,4 @@
-# Mini -ASV
+# Mini-ASV
 
 ### Required Software
 * CMake v2.6.0 or greater.
