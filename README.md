@@ -16,11 +16,3 @@
 * [OpenCV](https://riptutorial.com/opencv/example/15781/build-and-install-opencv-from-source)
 
 * [Librpip](https://librpip.frasersdev.net/get/download/)
-
-# Building Computer Vision Code
-```console
-$ cd Vision
-$ mkdir build && cd build
-$ cmake ..
-$ make
-```
