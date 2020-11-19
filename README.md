@@ -13,10 +13,9 @@
 
 ``sudo apt-get install make``
 
-* [OpenCV](https://docs.opencv.org/master/d2/de6/tutorial_py_setup_in_ubuntu.html)
+* [OpenCV](https://riptutorial.com/opencv/example/15781/build-and-install-opencv-from-source)
 
 * [Librpip](https://librpip.frasersdev.net/get/download/)
-
 
 # Building Computer Vision Code
 ```console
