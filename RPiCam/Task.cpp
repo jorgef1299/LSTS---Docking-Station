@@ -50,6 +50,8 @@ struct Arguments {
 struct Task : public DUNE::Tasks::Task {
   //! LiDAR frontal distance measurement
   double frontal_dist;
+  //! FL_NEAR flag is activated in Path Control State message
+  bool target_near;
   //! Capture RPiCam video
   cv::VideoCapture cap;
   //! Capture width
@@ -84,7 +86,7 @@ struct Task : public DUNE::Tasks::Task {
   //! @param[in] ctx context.
   Task(const std::string &name, Tasks::Context &ctx)
       : DUNE::Tasks::Task(name, ctx), frontal_dist(0.0), width(640),
-        height(480) {
+        height(480), target_near(0) {
     paramActive(Tasks::Parameter::SCOPE_MANEUVER,
                 Tasks::Parameter::VISIBILITY_USER);
 
@@ -94,6 +96,7 @@ struct Task : public DUNE::Tasks::Task {
             "Distance used as reference to confirm docking manouver success");
 
     bind<IMC::Distance>(this);
+    bind<IMC::PathControlState>(this);
   }
 
   void consume(const IMC::Distance *msg) {
@@ -101,6 +104,14 @@ struct Task : public DUNE::Tasks::Task {
       return;
 
     frontal_dist = msg->value;
+  }
+
+  void consume(const IMC::Distance *msg) {
+    if (msg->flags & IMC::PathControlState::FL_NEAR)
+        target_near = true;
+      else
+        target_near = false;
+
   }
 
   //! Update internal state with new parameter values.
@@ -189,17 +200,29 @@ struct Task : public DUNE::Tasks::Task {
           atan(delta_x / cap_frame.cols * tan(MAX_PICAM_ANGLE * M_PI / 180));
     }
 
-    cv::imshow("debug window", cap_frame);
+    inf("debug");
+    inf(heading_ref);
 
     cv::waitKey(1000);
+  }
+
+  void dock(void){
+    
+    redCircleDetection();
+
   }
 
   //! Main loop.
   void onMain(void) {
 
     while (!stopping()) {
-
-      redCircleDetection();
+      
+      if(isActive()){
+        
+        if(target_near){
+          dock();
+        }
+      }
 
       waitForMessages(1.0);
     }
