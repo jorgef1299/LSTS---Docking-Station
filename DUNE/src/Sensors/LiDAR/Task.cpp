@@ -75,7 +75,6 @@ namespace LiDAR
         .defaultValue("115200")
         .description("Serial port baud rate");
 
-      bind<IMC::Distance>(this);
       bind<IMC::IoEvent>(this);
     }
 
