@@ -200,7 +200,7 @@ struct Task : public DUNE::Tasks::Task {
     }
 
     inf("debug");
-    inf(heading_ref);
+    inf("%.3f", heading_ref);
 
     cv::waitKey(1000);
   }
