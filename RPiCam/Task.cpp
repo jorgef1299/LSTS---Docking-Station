@@ -55,9 +55,9 @@ struct Task : public DUNE::Tasks::Task {
   //! Capture RPiCam video
   cv::VideoCapture cap;
   //! Capture width
-  uint16_t width;
+  int width;
   //! Capture height
-  uint16_t height;
+  int height;
   //! Video frame
   cv::Mat cap_frame;
   //! Undistortion map 1
@@ -90,7 +90,7 @@ struct Task : public DUNE::Tasks::Task {
     paramActive(Tasks::Parameter::SCOPE_MANEUVER,
                 Tasks::Parameter::VISIBILITY_USER);
 
-    param("Manouver-is-over threshold distance", m_args.finish_dist)
+    param("Maneuver-is-over threshold distance", m_args.finish_dist)
         .defaultValue("1.0")
         .description(
             "Distance used as reference to confirm docking manouver success");
@@ -106,7 +106,7 @@ struct Task : public DUNE::Tasks::Task {
     frontal_dist = msg->value;
   }
 
-  void consume(const IMC::Distance *msg) {
+  void consume(const IMC::PathControlState *msg) {
     if (msg->flags & IMC::PathControlState::FL_NEAR)
         target_near = true;
       else
@@ -194,9 +194,9 @@ struct Task : public DUNE::Tasks::Task {
 
     for (auto blob_iterator : keypoints) {
 
-      delta_x = blob_iterator.pt.x - cap_frame.cols / 2;
+      auto delta_x = blob_iterator.pt.x - cap_frame.cols / 2;
 
-      heading_ref =
+      auto heading_ref =
           atan(delta_x / cap_frame.cols * tan(MAX_PICAM_ANGLE * M_PI / 180));
     }
 
@@ -217,10 +217,12 @@ struct Task : public DUNE::Tasks::Task {
 
     while (!stopping()) {
       
+      dock();
+
       if(isActive()){
         
         if(target_near){
-          dock();
+          // dock();
         }
       }
 
