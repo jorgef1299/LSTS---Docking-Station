@@ -51,13 +51,13 @@ struct Task : public DUNE::Tasks::Task {
   //! LiDAR frontal distance measurement
   double frontal_dist;
   //! FL_NEAR flag is activated in Path Control State message
-  bool target_near;
+  bool target_near = 0;
   //! Capture RPiCam video
   cv::VideoCapture cap;
   //! Capture width
-  int width;
+  int width = 640;
   //! Capture height
-  int height;
+  int height = 480;
   //! Video frame
   cv::Mat cap_frame;
   //! Undistortion map 1
@@ -85,8 +85,7 @@ struct Task : public DUNE::Tasks::Task {
   //! @param[in] name task name.
   //! @param[in] ctx context.
   Task(const std::string &name, Tasks::Context &ctx)
-      : DUNE::Tasks::Task(name, ctx), frontal_dist(0.0), width(640),
-        height(480), target_near(0) {
+      : DUNE::Tasks::Task(name, ctx), frontal_dist(0.0){
     paramActive(Tasks::Parameter::SCOPE_MANEUVER,
                 Tasks::Parameter::VISIBILITY_USER);
 
@@ -194,9 +193,9 @@ struct Task : public DUNE::Tasks::Task {
 
     for (auto blob_iterator : keypoints) {
 
-      auto delta_x = blob_iterator.pt.x - cap_frame.cols / 2;
+      delta_x = blob_iterator.pt.x - cap_frame.cols / 2;
 
-      auto heading_ref =
+      heading_ref =
           atan(delta_x / cap_frame.cols * tan(MAX_PICAM_ANGLE * M_PI / 180));
     }
 
