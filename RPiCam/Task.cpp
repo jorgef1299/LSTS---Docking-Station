@@ -83,7 +83,7 @@ struct Task : public DUNE::Tasks::Task {
   //! Deviation from center in x-axis
   double delta_x;
   //! Heading reference to aim
-  double heading_ref;
+  double heading_ref = 0;
   //! Vehicle estimated yaw in rads
   double est_yaw;
 
@@ -187,7 +187,7 @@ struct Task : public DUNE::Tasks::Task {
   }
 
   //! Red Circle Detection
-  void redCircleDetection(void) {
+  double redCircleDetection(void) {
 
     cap.read(cap_frame);
 
@@ -215,9 +215,11 @@ struct Task : public DUNE::Tasks::Task {
     }
 
     inf("debug");
-    inf("%.3f", heading_ref);
+    inf("%.3f", heading_ref);  
 
     cv::waitKey(2000);
+
+    return heading_ref;
   }
 
   void dock(void){
@@ -225,14 +227,14 @@ struct Task : public DUNE::Tasks::Task {
     m_maneuver_speed.value = m_args.speed;
     m_maneuver_speed.speed_units = IMC::SUNITS_METERS_PS;
 
-    redCircleDetection();
+    m_maneuver_heading.value = redCircleDetection();
 
     //dispatch speed
     // dispatch(m_maneuver_speed);
-    inf("maneuver_speed = %.3f", m_maneuver_speed);
+    inf("maneuver_speed = %.3f", m_maneuver_speed.value);
     //dispatch heading
     // dispatch(m_maneuver_heading);
-    inf("maneuver_speed = %.3f", m_maneuver_heading);
+    inf("est_yaw = %.3f, maneuver_heading = %.3f", est_yaw, m_maneuver_heading.value);
   }
 
   //! Main loop.
