@@ -43,11 +43,18 @@ using DUNE_NAMESPACES;
 
 namespace RPiCam {
 struct Arguments {
-  //! Manouver-is-over threshold distance
-  float finish_dist;
+  //! Maneuver-is-over threshold distance
+  double finish_dist;
+  //! Constant speed in m/s
+  double speed;
 };
 
 struct Task : public DUNE::Tasks::Task {
+  
+  //! Desired speed
+  IMC::DesiredSpeed m_maneuver_speed;
+  //! Desired heading
+  IMC::DesiredHeading m_maneuver_heading;
   //! LiDAR frontal distance measurement
   double frontal_dist;
   //! FL_NEAR flag is activated in Path Control State message
@@ -77,6 +84,8 @@ struct Task : public DUNE::Tasks::Task {
   double delta_x;
   //! Heading reference to aim
   double heading_ref;
+  //! Vehicle estimated yaw in rads
+  double est_yaw;
 
   //! Task Arguments
   Arguments m_args;
@@ -94,8 +103,14 @@ struct Task : public DUNE::Tasks::Task {
         .description(
             "Distance used as reference to confirm docking manouver success");
 
+    param("Speed", m_args.speed)
+        .defaultValue("1.0")
+        .description(
+            "Maneuver constant speed");
+
     bind<IMC::Distance>(this);
     bind<IMC::PathControlState>(this);
+    bind<IMC::EstimatedState>(this);
   }
 
   void consume(const IMC::Distance *msg) {
@@ -113,6 +128,10 @@ struct Task : public DUNE::Tasks::Task {
 
   }
 
+  void consume(const IMC::EstimatedState *msg) {
+    est_yaw = msg->theta;
+  }
+
   //! Update internal state with new parameter values.
   void onUpdateParameters(void) {}
 
@@ -125,14 +144,14 @@ struct Task : public DUNE::Tasks::Task {
   //! Acquire resources.
   void onResourceAcquisition(void) {
 
-    setEntityState(IMC::EntityState::ESTA_NORMAL, Status::CODE_ACTIVE);
-
     cap.open(0);
 
     if (!cap.isOpened()) {
       inf("Unable to open camera");
       return;
     }
+
+   	setEntityState(IMC::EntityState::ESTA_NORMAL, Status::CODE_ACTIVE);
   }
 
   //! Initialize resources.
@@ -173,7 +192,7 @@ struct Task : public DUNE::Tasks::Task {
     cap.read(cap_frame);
 
     cv::remap(cap_frame, cap_frame, map_1, map_2, cv::INTER_LINEAR);
-    cropROI(cap_frame);
+    // cropROI(cap_frame);
 
     // Color Detection
     cv::cvtColor(cap_frame, cap_frame, cv::COLOR_BGR2HSV);
@@ -187,10 +206,6 @@ struct Task : public DUNE::Tasks::Task {
     // Detect circles
     detector->detect(cap_frame, keypoints);
 
-    // temporary - delete when finished
-    drawKeypoints(cap_frame, keypoints, cap_frame, cv::Scalar(0, 0, 255),
-                  cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
-
     for (auto blob_iterator : keypoints) {
 
       delta_x = blob_iterator.pt.x - cap_frame.cols / 2;
@@ -202,13 +217,22 @@ struct Task : public DUNE::Tasks::Task {
     inf("debug");
     inf("%.3f", heading_ref);
 
-    cv::waitKey(1000);
+    cv::waitKey(2000);
   }
 
   void dock(void){
     
+    m_maneuver_speed.value = m_args.speed;
+    m_maneuver_speed.speed_units = IMC::SUNITS_METERS_PS;
+
     redCircleDetection();
 
+    //dispatch speed
+    // dispatch(m_maneuver_speed);
+    inf("maneuver_speed = %.3f", m_maneuver_speed);
+    //dispatch heading
+    // dispatch(m_maneuver_heading);
+    inf("maneuver_speed = %.3f", m_maneuver_heading);
   }
 
   //! Main loop.
@@ -221,6 +245,7 @@ struct Task : public DUNE::Tasks::Task {
       if(isActive()){
         
         if(target_near){
+          inf("TARGET IS NEAR -> RPiCam Task start");
           // dock();
         }
       }

@@ -84,19 +84,20 @@ namespace Sensors
         size_t rv = m_handle->read(&m_buffer[0], m_buffer.size());
         if (rv == 0)
           throw std::runtime_error(DTR("invalid read size"));
-//	inf("Return value = %d", rv);
-	//inf("%d %d %d %d %d %d %d %d %d", m_buffer[0],m_buffer[1], m_buffer[2], m_buffer[3], m_buffer[4], m_buffer[5], m_buffer[6], m_buffer[7], m_buffer[8]);
-        //for (size_t i = 0; i < rv; ++i)
-       // {
-          //m_line.push_back(std::to_string(m_buffer[i]));
-            //IMC::DevDataText line;
-            //line.value = m_line;
-           // dispatch(line);
-         //   m_line.clear();
-       // }
-	IMC::Distance dist;
-	dist.value = m_buffer[2]+ m_buffer[3]*256;
-	dispatch(dist);
+
+        //	inf("Return value = %d", rv);
+          //inf("%d %d %d %d %d %d %d %d %d", m_buffer[0],m_buffer[1], m_buffer[2], m_buffer[3], m_buffer[4], m_buffer[5], m_buffer[6], m_buffer[7], m_buffer[8]);
+                //for (size_t i = 0; i < rv; ++i)
+              // {
+                  //m_line.push_back(std::to_string(m_buffer[i]));
+                    //IMC::DevDataText line;
+                    //line.value = m_line;
+                  // dispatch(line);
+                //   m_line.clear();
+              // }
+        IMC::Distance dist;
+        dist.value = m_buffer[2]+ m_buffer[3]*256;  
+        dispatch(dist);
       }
 
       void
